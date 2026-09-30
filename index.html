@@ -81,12 +81,48 @@ summary:hover{color:var(--ink)}
 .pyr-panel{background:var(--card-soft);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:12px 14px;margin:10px 0 4px;font-size:.88rem;line-height:1.55}
 .pyr-panel ul{margin:8px 0 0;padding-left:18px}
 .pyr-panel ul li{margin-bottom:4px}
+.client-store-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:4px}
+.client-store-bar select{flex:1;min-width:140px;width:auto;padding:8px 10px;font-size:.85rem}
+.btn-sm{margin-top:0;width:auto;padding:8px 12px;font-size:.82rem;background:var(--card-soft);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn-sm:hover{box-shadow:none;background:var(--line);transform:none}
+.btn-danger{color:#C0392B;border-color:#C0392B}
+.quick-mode .tab-btn[data-tab="wealth"],.quick-mode .tab-btn[data-tab="cpf"]{display:none}
+.tab-btn.visited:not(.active)::after{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:5px;vertical-align:middle}
+.compare-table{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:4px}
+.compare-table th,.compare-table td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.compare-table th{font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:700}
+.compare-table td.compare-metric{color:var(--muted);white-space:nowrap;font-weight:600}
+.results-actions{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.results-head{margin:0 0 14px}
+.results-head .ref{margin-top:2px}
+@media print{
+  body{background:#fff}
+  .client-store-bar,#clientStoreMsg,#quickModeRow,#agentName,label[for="agentName"],header,.tabs,form,.results-actions{display:none!important}
+  main{display:block!important;max-width:100%!important;padding:0!important}
+  .out{border:none!important;box-shadow:none!important;padding:0!important}
+  .item{box-shadow:none!important;break-inside:avoid}
+  .cover{break-inside:avoid}
+  .suite{break-inside:avoid-page}
+  input,select{border:none!important;background:transparent!important;padding:2px 0!important}
+  details{display:block!important}
+  summary{display:none!important}
+}
 </style>
 </head>
 <body>
 <main>
 <header><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h1>Client Cover Planner</h1><p class="sub">A starting point for the conversation — enter your client's details for a suggested Great Eastern plan mix, then confirm the exact figures in your quotation system.</p></div><button type="button" id="installBtn" hidden style="margin-top:0;width:auto;white-space:nowrap;padding:9px 16px;font-size:.85rem">Install as app</button></div></header>
 <form id="f">
+<div class="client-store-bar">
+<select id="savedClientSel"><option value="">— Saved clients —</option></select>
+<button type="button" id="loadClientBtn" class="btn-sm">Load</button>
+<button type="button" id="saveClientBtn" class="btn-sm">Save</button>
+<button type="button" id="newClientBtn" class="btn-sm">New</button>
+<button type="button" id="deleteClientBtn" class="btn-sm btn-danger">Delete</button>
+</div>
+<div id="clientStoreMsg" class="ref" style="margin:-6px 0 12px;min-height:1.2em"></div>
+<label for="agentName" style="margin-top:0">Prepared by (your name)</label><input id="agentName" type="text" placeholder="Shown on the results header and printout">
+<label class="chk" id="quickModeRow"><input type="checkbox" id="quickMode"> Quick mode — hide Wealth and CPF tabs for a fast first pass</label>
 <div class="tabs">
 <button type="button" class="tab-btn active" data-tab="intro">Intro</button>
 <button type="button" class="tab-btn" data-tab="client">Client</button>
@@ -107,16 +143,19 @@ summary:hover{color:var(--ink)}
 </ul>
 </div>
 <div class="tab-panel" data-panel="client" hidden>
-<div class="row"><div><label for="age">Age</label><input id="age" type="number" min="0" max="99" required></div>
-<div><label for="dep">Dependents</label><input id="dep" type="number" min="0" value="0" required></div></div>
-<label for="inc">Annual income</label><input id="inc" type="text" inputmode="numeric" placeholder="e.g. 60,000" required>
-<label for="sav">Current savings and investments</label><input id="sav" type="text" inputmode="numeric" placeholder="e.g. 20,000">
-<label for="exp">Annual expenses</label><input id="exp" type="text" inputmode="numeric" placeholder="e.g. 40,000">
+<label for="clientName">Client name</label><input id="clientName" type="text" placeholder="e.g. John Tan">
+<div class="row"><div><label for="age">Age *</label><input id="age" type="number" min="0" max="99" required></div>
+<div><label for="dep">Dependents *</label><input id="dep" type="number" min="0" value="0" required></div></div>
+<label for="inc">Annual income *</label><input id="inc" type="text" inputmode="numeric" placeholder="e.g. 60,000" required>
+<p class="ref" style="margin:-4px 0 0">* required for a recommendation. Everything else on this page is optional — fill in what the conversation covers.</p>
+<label for="sav">Current savings and investments (optional)</label><input id="sav" type="text" inputmode="numeric" placeholder="e.g. 20,000">
+<label for="exp">Annual expenses (optional)</label><input id="exp" type="text" inputmode="numeric" placeholder="e.g. 40,000">
 <label for="occ">Occupation</label><select id="occ"><option value="0">Office or professional</option><option value="1">Mix of office and field work</option><option value="2">Manual or hazardous</option></select>
+<div class="detail-fields">
 <fieldset><legend>Lifestyle</legend>
 <label class="chk"><input type="checkbox" id="smoker"> Smoker</label>
 <label class="chk"><input type="checkbox" id="sports"> Regular high-risk sports</label></fieldset>
-<fieldset><legend>Existing coverage</legend>
+<fieldset><legend>Existing coverage (optional)</legend>
 <div class="chk-row"><label class="chk"><input type="checkbox" name="have" value="term" class="have-cb" data-bucket="death"> Term life</label><input type="text" inputmode="numeric" class="have-amt" data-for="term" placeholder="Death cover amount, e.g. 200,000" hidden></div>
 <div class="chk-row"><label class="chk"><input type="checkbox" name="have" value="lm" class="have-cb" data-bucket="death"> Whole life (limited pay)</label><input type="text" inputmode="numeric" class="have-amt" data-for="lm" placeholder="Death cover amount, e.g. 200,000" hidden></div>
 <div class="chk-row"><label class="chk"><input type="checkbox" name="have" value="la" class="have-cb" data-bucket="death"> Whole life (investment-linked)</label><input type="text" inputmode="numeric" class="have-amt" data-for="la" placeholder="Death cover amount, e.g. 200,000" hidden></div>
@@ -128,6 +167,7 @@ summary:hover{color:var(--ink)}
 <label for="existDeath">Existing death/life cover amount</label><input id="existDeath" type="text" inputmode="numeric" placeholder="Auto-totalled from above, or type directly">
 <label for="existCI">Existing critical illness cover amount</label><input id="existCI" type="text" inputmode="numeric" placeholder="Auto-totalled from above, or type directly">
 </fieldset>
+</div>
 </div>
 <div class="tab-panel" data-panel="coverage" hidden>
 <label for="goal">Main goal</label><select id="goal"><option value="term">Protect family income</option><option value="lm">Lifelong protection for yourself or your loved ones</option><option value="la">Comprehensive lifelong coverage</option></select>
@@ -402,11 +442,43 @@ function updChartsForSuite(suiteEl){
   if(invBud>0)m+='<br>Monthly investment-only budget: '+fmt(invBud);
   const totTextEl=suiteEl.querySelector('.totText');
   if(totTextEl)totTextEl.innerHTML=m;
+  suiteEl.dataset.annual=annualTotal;
 }
-function updAllSuites(){document.querySelectorAll('.suite').forEach(updChartsForSuite);}
+function updAllSuites(){document.querySelectorAll('.suite').forEach(updChartsForSuite);updCompareTable();}
+function updCompareTable(){
+  const wrap=$('compareTable');
+  if(!wrap)return;
+  const suites=[...document.querySelectorAll('.suite')];
+  if(!suites.length)return;
+  const planName=k=>({term:P.term.n,lm:P.lm.n,la:P.la.n}[k]||k);
+  let t='<table class="compare-table"><tr><th>Option</th>'+suites.map(s=>'<th>'+s.dataset.label+(s.dataset.matches==='1'?' <span class="tag best">Matches goal</span>':'')+'</th>').join('')+'</tr>';
+  t+='<tr><td class="compare-metric">Core plan</td>'+suites.map(s=>'<td>'+planName(s.dataset.lifek)+'</td>').join('')+'</tr>';
+  t+='<tr><td class="compare-metric">Premiums entered so far</td>'+suites.map(s=>{const a=+s.dataset.annual||0;return '<td>'+(a>0?fmt(a)+'/yr (≈'+fmt(a/12)+'/mo)':'<span class="empty">Not entered yet</span>')+'</td>';}).join('')+'</tr>';
+  t+='</table>';
+  wrap.innerHTML=t;
+}
+function buildEmailHref(clientName,agentName,cover){
+  const lines=[];
+  lines.push('Cover plan summary'+(clientName?' for '+clientName:'')+', '+new Date().toLocaleDateString('en-SG'));
+  if(agentName)lines.push('Prepared by '+agentName);
+  lines.push('');
+  lines.push('Protection gap — Death & disability: '+fmt(cover.death)+' (total need '+fmt(cover.totalDeath)+')');
+  lines.push('Protection gap — Critical illness: '+fmt(cover.ci)+' (total need '+fmt(cover.totalCI)+')');
+  lines.push('');
+  document.querySelectorAll('.suite').forEach(s=>{
+    const a=+s.dataset.annual||0;
+    lines.push('Option '+s.dataset.suite+' ('+s.dataset.label+'): core plan — '+({term:P.term.n,lm:P.lm.n,la:P.la.n}[s.dataset.lifek]||'')+(a>0?', '+fmt(a)+'/yr entered so far':', premiums not yet entered'));
+  });
+  lines.push('');
+  lines.push('This is a starting point for the conversation, not a quotation — figures are confirmed in the quotation system.');
+  const subject='Cover plan summary'+(clientName?' — '+clientName:'');
+  return 'mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(lines.join('\n'));
+}
+window.addEventListener('beforeprint',()=>{document.querySelectorAll('#res details').forEach(d=>{d.dataset.wasOpen=d.open?'1':'0';d.open=true;});});
+window.addEventListener('afterprint',()=>{document.querySelectorAll('#res details').forEach(d=>{d.open=d.dataset.wasOpen==='1';});});
 function suiteBlock(n,lifeK,label,blurb,ctx){
   const{age,dep,have,wealthWanted,ward,accWanted,ltcWanted,goal}=ctx;
-  let h='<div class="suite" data-suite="'+n+'">';
+  let h='<div class="suite" data-suite="'+n+'" data-lifek="'+lifeK+'" data-label="'+label+'" data-matches="'+(lifeK===goal?'1':'0')+'">';
   h+='<h2>Option '+n+': '+label+(lifeK===goal?' <span class="tag best" style="margin-left:8px">Matches stated goal</span>':'')+'</h2>';
   h+='<p class="sub" style="margin:0 0 14px">'+blurb+'</p>';
   h+=card(lifeK,P[lifeK],'Core life cover',have.has(lifeK),'p3',true,age);
@@ -431,9 +503,14 @@ $('f').addEventListener('submit',e=>{
   const ward=$('ward').value,wealthWanted=$('wealth').value==='y',ltcWanted=$('ltc').value==='y',accWanted=$('accint').value==='y',goal=$('goal').value;
   const ctx={age,dep,have,wealthWanted,ward,accWanted,ltcWanted,goal};
   lastRec={ward,accWanted,ltcWanted,have,wealthWanted};
-  let h=notes.map(n=>'<div class="note">'+n+'</div>').join('');
+  const clientName=($('clientName').value||'').trim(),agentName=($('agentName').value||'').trim();
+  const today=new Date().toLocaleDateString('en-SG',{day:'numeric',month:'long',year:'numeric'});
+  let h='<div class="results-head"><h3 style="font:700 1.1rem \'Literata\',Georgia,serif;margin:0">'+(clientName?'For '+clientName:'Client cover plan')+'</h3><div class="ref">'+today+(agentName?' · Prepared by '+agentName:'')+'</div></div>';
+  h+='<div class="results-actions"><button type="button" id="printBtn" class="btn-sm">Print / Save as PDF</button><a id="emailBtn" class="btn-sm" style="text-decoration:none;display:inline-block" href="#">Email summary</a></div>';
+  h+=notes.map(n=>'<div class="note">'+n+'</div>').join('');
   h+='<div class="cover"><b>Recommended vs existing, by tier</b><div class="pyr-wrap" style="margin-top:12px">'+renderPyramid()+'</div></div>';
   h+='<div class="cover"><b>Coverage summary</b>: recommended vs existing<div class="chartwrap" id="covChart"></div></div>';
+  h+='<div class="cover"><b>Suite comparison, at a glance</b><div id="compareTable" style="margin-top:8px;overflow-x:auto"></div></div>';
   h+='<p class="sub" style="margin:4px 0 18px">Three complete suites below — only the core life plan changes between them; the add-ons stay the same so they can be compared side by side.</p>';
   h+=suiteBlock(1,'term','Term-based suite','Lowest premium, most cover while working — a good fit if budget is tight or cover is mainly needed during income-earning years.',ctx);
   h+=suiteBlock(2,'lm','Life Multiplier-based suite','Lifelong cover with a limited pay period — a middle ground between cost today and cover for life.',ctx);
@@ -441,6 +518,8 @@ $('f').addEventListener('submit',e=>{
   $('res').className='';$('res').innerHTML=h;
   bindPyramid($('res'),true);
   $('covChart').innerHTML=svgStackedBar(['Death & disability','Critical illness'],[cover.existDeath,cover.existCI],[cover.death,cover.ci]);
+  $('printBtn').addEventListener('click',()=>window.print());
+  $('emailBtn').addEventListener('click',ev=>{ev.preventDefault();window.location.href=buildEmailHref(clientName,agentName,cover);});
   updAllSuites();
   document.querySelectorAll('.qt').forEach(e=>{bindCurrency(e);e.addEventListener('input',updAllSuites);});
   ['lump','invBud'].forEach(id=>{const el=$(id);if(!el.dataset.bound){bindCurrency(el);el.addEventListener('input',updAllSuites);el.dataset.bound='1';}});
@@ -471,8 +550,86 @@ $('cpfHouse').addEventListener('change',()=>{$('cpfInstWrap').hidden=$('cpfHouse
 document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  btn.classList.add('visited');
   document.querySelectorAll('.tab-panel').forEach(p=>p.hidden=p.dataset.panel!==btn.dataset.tab);
 }));
+document.querySelector('.tab-btn.active').classList.add('visited');
+$('quickMode').addEventListener('change',()=>{
+  const q=$('quickMode').checked;
+  document.body.classList.toggle('quick-mode',q);
+  const activeBtn=document.querySelector('.tab-btn.active');
+  if(q&&activeBtn&&(activeBtn.dataset.tab==='wealth'||activeBtn.dataset.tab==='cpf')){
+    document.querySelector('.tab-btn[data-tab="client"]').click();
+  }
+});
+// --- Saved client cases (stored locally in this browser only) ---
+const CLIENT_STORE_KEY='coverPlannerClients';
+const SAVED_FIELD_IDS=['clientName','age','dep','inc','sav','exp','occ','existDeath','existCI','goal','ltc','accint','ward','bud','lump','wealth','invBud','cpfOA','cpfSA','cpfMA','cpfSalary','cpfHouse','cpfInst'];
+function loadClientsStore(){try{return JSON.parse(localStorage.getItem(CLIENT_STORE_KEY)||'{}');}catch(e){return{};}}
+function saveClientsStore(obj){try{localStorage.setItem(CLIENT_STORE_KEY,JSON.stringify(obj));}catch(e){}}
+function refreshSavedClientSel(selectName){
+  const store=loadClientsStore(),names=Object.keys(store).sort((a,b)=>a.localeCompare(b));
+  const sel=$('savedClientSel');
+  sel.innerHTML='<option value="">— Saved clients ('+names.length+') —</option>'+names.map(n=>'<option value="'+n.replace(/"/g,'&quot;')+'">'+n+'</option>').join('');
+  if(selectName)sel.value=selectName;
+}
+function collectFormState(){
+  const state={};
+  SAVED_FIELD_IDS.forEach(id=>{const el=$(id);if(el)state[id]=el.value;});
+  state.smoker=$('smoker').checked;state.sports=$('sports').checked;
+  state.have=[...document.querySelectorAll('[name=have]:checked')].map(e=>e.value);
+  state.haveAmt={};
+  document.querySelectorAll('.have-amt').forEach(el=>{state.haveAmt[el.dataset.for]=el.value;});
+  return state;
+}
+function applyFormState(state){
+  SAVED_FIELD_IDS.forEach(id=>{const el=$(id);if(el&&state[id]!==undefined)el.value=state[id];});
+  $('smoker').checked=!!state.smoker;$('sports').checked=!!state.sports;
+  document.querySelectorAll('[name=have]').forEach(cb=>{
+    cb.checked=(state.have||[]).includes(cb.value);
+    const row=cb.closest('.chk-row'),amtEl=row?row.querySelector('.have-amt'):null;
+    if(amtEl){amtEl.hidden=!cb.checked;amtEl.value=(cb.checked&&state.haveAmt&&state.haveAmt[cb.value]!==undefined)?state.haveAmt[cb.value]:'';}
+  });
+  recalcExisting();
+  $('cpfInstWrap').hidden=$('cpfHouse').value!=='y';
+}
+$('saveClientBtn').addEventListener('click',()=>{
+  const name=($('clientName').value||'').trim();
+  if(!name){$('clientStoreMsg').textContent='Enter a client name above first, then Save.';return;}
+  const store=loadClientsStore();
+  store[name]=collectFormState();
+  saveClientsStore(store);
+  refreshSavedClientSel(name);
+  $('clientStoreMsg').textContent='Saved "'+name+'".';
+});
+$('loadClientBtn').addEventListener('click',()=>{
+  const name=$('savedClientSel').value;
+  if(!name){$('clientStoreMsg').textContent='Pick a saved client from the list first.';return;}
+  const store=loadClientsStore();
+  if(store[name]){applyFormState(store[name]);$('clientStoreMsg').textContent='Loaded "'+name+'".';}
+});
+$('deleteClientBtn').addEventListener('click',()=>{
+  const name=$('savedClientSel').value;
+  if(!name){$('clientStoreMsg').textContent='Pick a saved client from the list first.';return;}
+  const store=loadClientsStore();
+  delete store[name];
+  saveClientsStore(store);
+  refreshSavedClientSel();
+  $('clientStoreMsg').textContent='Deleted "'+name+'".';
+});
+$('newClientBtn').addEventListener('click',()=>{
+  $('f').reset();
+  document.querySelectorAll('.have-amt').forEach(el=>{el.hidden=true;el.value='';});
+  $('cpfInstWrap').hidden=true;
+  recalcExisting();
+  refreshSavedClientSel();
+  $('res').className='empty';$('res').innerHTML='Fill in the client details and select Get recommendation.';
+  $('clientStoreMsg').textContent='Started a new blank client.';
+});
+refreshSavedClientSel();
+const agentNameEl=$('agentName');
+try{agentNameEl.value=localStorage.getItem('coverPlannerAgentName')||'';}catch(e){}
+agentNameEl.addEventListener('input',()=>{try{localStorage.setItem('coverPlannerAgentName',agentNameEl.value);}catch(e){}});
 const PYRAMID=[
   {row:'Protection foundation',color:'#6E1725',cells:[
     {k:'hosp',label:'Hospital',why:'Covers the biggest, most unpredictable bills first — the base of the pyramid.'},
