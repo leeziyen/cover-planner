@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Great Eastern Client Cover Planner</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#8C1F2F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cover Planner">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:wght@500;700&family=Public+Sans:wght@400;600&display=swap">
+<style>
+:root{--bg:#F8F4EC;--card:#FFFFFF;--card-soft:#FBF8F2;--ink:#241E17;--muted:#6E6355;--line:#E6DFCF;--crimson:#8C1F2F;--crimson-deep:#6E1725;--gold:#A9852E;--core:#8C1F2F;--rec:#A9852E;--opt:#9A9186;--shadow:0 1px 2px rgba(60,45,20,.06),0 4px 14px rgba(60,45,20,.05);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1B1A18;--card:#262421;--card-soft:#2B2925;--ink:#EFEBE3;--muted:#B4AFA6;--line:#3A3733;--crimson:#E0546A;--crimson-deep:#C43F55;--gold:#D6A24B;--core:#E0546A;--rec:#D6A24B;--opt:#8A8580;--shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25)}}
+:root[data-theme="dark"]{--bg:#1B1A18;--card:#262421;--card-soft:#2B2925;--ink:#EFEBE3;--muted:#B4AFA6;--line:#3A3733;--crimson:#E0546A;--crimson-deep:#C43F55;--gold:#D6A24B;--core:#E0546A;--rec:#D6A24B;--opt:#8A8580;--shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Public Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:960px;margin:0 auto;padding:24px 18px 56px;display:grid;gap:24px}
+@media(min-width:800px){main{grid-template-columns:360px 1fr;align-items:start;gap:28px}header{grid-column:1/-1}}
+header{padding-bottom:16px;border-bottom:2px solid var(--line)}
+h1{font:700 1.85rem/1.2 "Literata",Georgia,serif;margin:0 0 6px;letter-spacing:-.01em}
+h2{font:700 1.15rem "Literata",Georgia,serif;margin:0 0 14px;padding-top:22px;border-top:1px solid var(--line)}
+h2:first-child{padding-top:0;border-top:none}
+p.sub{margin:0;color:var(--muted);font-size:.97rem;line-height:1.55}
+form,.out{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:var(--shadow)}
+form{position:sticky;top:20px}
+@media(max-width:799px){form{position:static}}
+label{display:block;font-weight:600;font-size:.88rem;margin:16px 0 6px;color:var(--ink)}
+input[type=number],input[type=text],select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;transition:border-color .15s}
+input:hover,select:hover{border-color:var(--opt)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chk{display:flex;gap:9px;align-items:center;font-weight:400;margin:9px 0;font-size:.95rem}
+.chk input{width:auto}
+fieldset{border:0;padding:0;margin:20px 0 0}legend{font-weight:700;font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+button{margin-top:22px;width:100%;padding:13px;border:0;border-radius:9px;background:var(--crimson);color:#fff;font:600 1rem "Public Sans",sans-serif;cursor:pointer;box-shadow:0 2px 8px rgba(140,31,47,.25);transition:transform .1s,box-shadow .15s}
+button:hover{box-shadow:0 4px 12px rgba(140,31,47,.32);transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+:root[data-theme="dark"] button{color:#1B1215}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.item{background:var(--card-soft);border:1px solid var(--line);border-left:4px solid var(--opt);border-radius:10px;padding:18px 20px;margin:0 0 16px;box-shadow:var(--shadow)}
+.item.p3{border-left-color:var(--core)}.item.p2{border-left-color:var(--rec)}.item.held{opacity:.72}
+.item h3{margin:0 0 6px;font:700 1.05rem "Literata",Georgia,serif;line-height:1.35}
+.item>div:not(.wa-tl):not(.la-tl){color:var(--muted);font-size:.95rem;margin-bottom:8px}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;color:var(--muted);background:var(--bg);border-radius:999px;padding:3px 10px;letter-spacing:.02em;vertical-align:middle;margin-top:2px}
+.tag.best{background:rgba(140,31,47,.12);color:var(--crimson)}
+.amt{font-weight:600}
+.note{background:var(--card-soft);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:12px 14px;font-size:.92rem;line-height:1.55;margin-bottom:12px}
+.empty{color:var(--muted)}
+.small{font-size:.8rem;color:var(--muted);margin-top:14px;line-height:1.6}
+details{margin-top:16px;font-size:.95rem}
+summary{cursor:pointer;color:var(--muted);font-weight:600;font-size:.85rem}
+summary:hover{color:var(--ink)}
+.cover{background:var(--card-soft);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px}
+.item ul{margin:6px 0 0;padding-left:20px;line-height:1.65}
+.item ul li{margin-bottom:5px}
+.best{color:var(--core)}
+.ref{font-size:.85rem;color:var(--muted);margin-top:6px;line-height:1.55}
+.q{display:block;font-size:.85rem;font-weight:400;margin-top:10px}
+.q input,.q select{width:170px;padding:7px 9px;display:inline-block}
+.over{color:#C0392B;font-weight:600}
+.chartwrap{max-width:360px;margin:12px auto 0}
+.tabs{display:flex;gap:5px;margin-bottom:18px;background:var(--bg);border-radius:11px;padding:4px}
+.tab-btn{flex:1;padding:9px 4px;border:0;background:transparent;color:var(--muted);border-radius:8px;font:600 .82rem "Public Sans",sans-serif;cursor:pointer;transition:background .15s,color .15s}
+.tab-btn.active{background:var(--crimson);color:#fff;box-shadow:0 1px 4px rgba(140,31,47,.3)}
+:root[data-theme="dark"] .tab-btn.active{color:#1B1215}
+.tab-panel label:first-child{margin-top:0}
+.chk-row{margin:9px 0}
+.chk-row .have-amt{margin:6px 0 0 26px;width:calc(100% - 26px);padding:8px 10px}
+.suite+.suite{margin-top:30px;padding-top:26px;border-top:2px solid var(--line)}
+.pyr-wrap{max-width:440px;margin:0 auto}
+.pyr-row{position:relative;margin:0;display:block}
+.pyr-bg{position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:2px}
+.pyr-fg{position:relative;z-index:1;display:flex}
+.pyr-cell{flex:1;padding:16px 6px;text-align:center;font-size:clamp(11px,2.3vw,12.5px);font-weight:700;color:#fff;cursor:pointer;line-height:1.3;display:flex;align-items:center;justify-content:center;min-height:44px;text-shadow:0 1px 2px rgba(0,0,0,.25);transition:filter .15s}
+.pyr-cell:hover{filter:brightness(1.08)}
+.pyr-panel{background:var(--card-soft);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:12px 14px;margin:10px 0 4px;font-size:.88rem;line-height:1.55}
+.pyr-panel ul{margin:8px 0 0;padding-left:18px}
+.pyr-panel ul li{margin-bottom:4px}
+</style>
+</head>
+<body>
+<main>
+<header><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h1>Client Cover Planner</h1><p class="sub">A starting point for the conversation — enter your client's details for a suggested Great Eastern plan mix, then confirm the exact figures in your quotation system.</p></div><button type="button" id="installBtn" hidden style="margin-top:0;width:auto;white-space:nowrap;padding:9px 16px;font-size:.85rem">Install as app</button></div></header>
+<form id="f">
+<div class="tabs">
+<button type="button" class="tab-btn active" data-tab="intro">Intro</button>
+<button type="button" class="tab-btn" data-tab="client">Client</button>
+<button type="button" class="tab-btn" data-tab="coverage">Coverage</button>
+<button type="button" class="tab-btn" data-tab="wealth">Wealth</button>
+<button type="button" class="tab-btn" data-tab="cpf">CPF</button>
+</div>
+<div class="tab-panel" data-panel="intro">
+<p class="sub" style="margin:0 0 10px">Two frameworks worth sharing with your client before diving into their numbers.</p>
+<div id="introPyramid" class="pyr-wrap"></div>
+<h3 style="font:700 1rem 'Literata',Georgia,serif;margin:18px 0 6px">A quick word on CPF</h3>
+<ul style="margin:0;padding-left:18px;font-size:.9rem">
+<li><b>OA (Ordinary Account):</b> housing, approved insurance, investment, education. 2.5% p.a.</li>
+<li><b>SA (Special Account, closes at 55):</b> retirement savings and approved investments. 4% p.a.</li>
+<li><b>MA (MediSave Account):</b> hospital bills and approved medical insurance (MediShield Life, Integrated Shield Plans). 4% p.a., capped at the Basic Healthcare Sum (S$79,000 in 2026).</li>
+<li><b>RA (Retirement Account, from 55):</b> formed from OA + SA up to the Full Retirement Sum; funds CPF LIFE for monthly payouts for life.</li>
+<li><b>DPS (Dependants' Protection Scheme):</b> free opt-out term life, automatically covers CPF members 21–65, up to S$70,000 (S$55,000 from 60). Administered by Great Eastern — a safety net, not a full life plan.</li>
+</ul>
+</div>
+<div class="tab-panel" data-panel="client" hidden>
+<div class="row"><div><label for="age">Age</label><input id="age" type="number" min="0" max="99" required></div>
+<div><label for="gender">Gender</label><select id="gender"><option>Female</option><option>Male</option><option>Other</option></select></div></div>
+<div class="row"><div><label for="mar">Marital status</label><select id="mar"><option value="0">Single</option><option value="1">Married</option></select></div>
+<div><label for="dep">Dependents</label><input id="dep" type="number" min="0" value="0" required></div></div>
+<label for="inc">Annual income</label><input id="inc" type="text" inputmode="numeric" placeholder="e.g. 60,000" required>
+<label for="sav">Current savings and investments</label><input id="sav" type="text" inputmode="numeric" placeholder="e.g. 20,000">
+<label for="exp">Annual expenses</label><input id="exp" type="text" inputmode="numeric" placeholder="e.g. 40,000">
+<label for="occ">Occupation</label><select id="occ"><option value="0">Office or professional</option><option value="1">Mix of office and field work</option><option value="2">Manual or hazardous</option></select>
+<fieldset><legend>Lifestyle</legend>
+<label class="chk"><input type="checkbox" id="smoker"> Smoker</label>
+<label class="chk"><input type="checkbox" id="sports"> Regular high-risk sports</label></fieldset>
+<fieldset><legend>Existing coverage</legend>
+<div class="chk-row"><label class="chk"><input type="checkbox" name="have" value="term" class="have-cb" data-bucket="death"> Term life</label><input type="text" inputmode="numeric" class="have-amt" data-for="term" placeholder="Death cover amount, e.g. 200,000" hidden></div>
+<div class="chk-row"><label class="chk"><input type="checkbox" name="have" value="lm" class="have-cb" data-bucket="death"> Whole life (limited pay)</label><input type="text" inputmode="numeric" class="have-amt" data-for="lm" placeholder="Death cover amount, e.g. 200,000" hidden></div>
+<div class="chk-row"><label class="chk"><input type="checkbox" name="have" value="la" class="have-cb" data-bucket="death"> Whole life (investment-linked)</label><input type="text" inputmode="numeric" class="have-amt" data-for="la" placeholder="Death cover amount, e.g. 200,000" hidden></div>
+<div class="chk-row"><label class="chk"><input type="checkbox" name="have" value="ci" class="have-cb" data-bucket="ci"> Critical illness</label><input type="text" inputmode="numeric" class="have-amt" data-for="ci" placeholder="CI cover amount, e.g. 100,000" hidden></div>
+<div class="chk-row"><label class="chk"><input type="checkbox" name="have" value="wa" class="have-cb" data-bucket="death"> Wealth or savings plan</label><input type="text" inputmode="numeric" class="have-amt" data-for="wa" placeholder="Death benefit amount, e.g. 100,000" hidden></div>
+<label class="chk"><input type="checkbox" name="have" value="hosp"> Hospital plan</label>
+<label class="chk"><input type="checkbox" name="have" value="acc"> Accident plan</label>
+<label class="chk"><input type="checkbox" name="have" value="cs"> CareShield supplement</label>
+<label for="existDeath">Existing death/life cover amount</label><input id="existDeath" type="text" inputmode="numeric" placeholder="Auto-totalled from above, or type directly">
+<label for="existCI">Existing critical illness cover amount</label><input id="existCI" type="text" inputmode="numeric" placeholder="Auto-totalled from above, or type directly">
+</fieldset>
+</div>
+<div class="tab-panel" data-panel="coverage" hidden>
+<label for="goal">Main goal</label><select id="goal"><option value="term">Protect family income</option><option value="lm">Lifelong protection for yourself or your loved ones</option><option value="la">Comprehensive lifelong coverage</option></select>
+<label for="ltc">Interested in long-term care coverage?</label><select id="ltc"><option value="">Not specified</option><option value="y">Yes</option></select>
+<label for="accint">Interested in personal accident coverage?</label><select id="accint"><option value="">Not specified</option><option value="y">Yes</option></select>
+<label for="ward">Hospital preference</label><select id="ward"><option value="">Not specified</option><option value="p">Private hospital</option><option value="a">A ward at restructured hospitals</option></select>
+<label for="bud">Monthly insurance budget (optional)</label><input id="bud" type="text" inputmode="numeric" placeholder="e.g. 400">
+<label for="lump">Lump sum insurance budget (optional)</label><input id="lump" type="text" inputmode="numeric" placeholder="For single-premium or top-up amounts">
+</div>
+<div class="tab-panel" data-panel="wealth" hidden>
+<label for="wealth">Interested in wealth accumulation or retirement planning?</label><select id="wealth"><option value="">Not specified</option><option value="y">Yes</option></select>
+<label for="invBud">Monthly budget for investment only (optional)</label><input id="invBud" type="text" inputmode="numeric" placeholder="e.g. 500">
+</div>
+<div class="tab-panel" data-panel="cpf" hidden>
+<p class="ref" style="margin:0 0 10px">Uses the age entered in the Client tab.</p>
+<label for="cpfOA">Current Ordinary Account balance</label><input id="cpfOA" type="text" inputmode="numeric" placeholder="e.g. 40,000">
+<label for="cpfSA">Current Special Account balance</label><input id="cpfSA" type="text" inputmode="numeric" placeholder="e.g. 30,000">
+<label for="cpfMA">Current MediSave Account balance</label><input id="cpfMA" type="text" inputmode="numeric" placeholder="e.g. 20,000">
+<label for="cpfSalary">Monthly salary (Ordinary Wages, capped at S$8,000)</label><input id="cpfSalary" type="text" inputmode="numeric" placeholder="e.g. 5,000">
+<label for="cpfHouse">Financing a house?</label><select id="cpfHouse"><option value="">No</option><option value="y">Yes</option></select>
+<div id="cpfInstWrap" hidden><label for="cpfInst">Monthly housing instalment (paid from OA)</label><input id="cpfInst" type="text" inputmode="numeric" placeholder="e.g. 1,500"></div>
+<button type="button" id="cpfCalc">Calculate CPF</button>
+<div id="cpfRes" class="empty" style="margin-top:14px">Fill in the CPF fields above and age in the Client tab, then select Calculate CPF.</div>
+</div>
+<button type="submit">Get recommendation</button>
+</form>
+<section class="out" aria-live="polite"><h2>Recommended plans</h2><div id="res" class="empty">Fill in the client details and select Get recommendation.</div>
+<details><summary><b>Plan types at a glance, for the client</b></summary>
+<p><b>Term:</b> the lowest premium for the highest cover over a fixed period. It ends when the term ends and builds no savings.</p>
+<p><b>Whole life, limited pay:</b> cover for life while premiums stop after a set number of years, and the policy builds cash value.</p>
+<p><b>Whole life, investment-linked:</b> lifelong cover with flexible top-ups and withdrawals. Values move with the funds chosen and are not guaranteed.</p>
+<p><b>Wealth accumulation:</b> built to grow savings for a goal or legacy, with basic protection attached. Values move with the market.</p></details>
+<p class="small">Plan details are drawn from Great Eastern's product materials and internal product information packs. Figures here are guides for the conversation, not a quotation — confirm exact numbers in your quotation system and the latest product summary before presenting to a client.</p></section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>'S$'+Math.round(n).toLocaleString('en-SG');
+function fmtInput(el){const d=el.value.replace(/[^\d]/g,'');el.value=d?'S$'+Number(d).toLocaleString('en-SG'):'';}
+function rawNum(el){return +((el.value||'').replace(/[^\d]/g,'')||0);}
+function bindCurrency(el){el.addEventListener('input',()=>fmtInput(el));}
+const P={
+term:{n:'GREAT Term',best:'Most cover for the lowest premium, while working.',f:['Death and terminal illness cover','CI and disability cover available as riders','Convertible to another plan later']},
+lm:{n:'GREAT Life Multiplier',best:'Lifelong cover for yourself, a child, or parents — pay for a fixed period.',f:['Covers death, TPD and terminal illness for life','Cover multiplier up to 10 times, with CI riders available','Parent Care Rider: no medical check for parents','Child\'s policy can transfer to them at 18']},
+la:{n:'GREAT Life Advantage 4',best:'A comprehensive, lifelong plan that grows with your client\'s life.',f:['Death, TPD and terminal illness cover, from S$100/month','Child Cover Benefit: S$20,000 for a child under 18','GISA: raise cover at 8 life events, no medical check, before age 60','CI riders pay extra — a claim doesn\'t reduce your base cover or account value','CI riders also cover: 10 extra conditions, 16 childhood conditions, 5 senior conditions, and benign tumours','From 55: can zero out base cover, keep CI, and pay less','No surrender charge after policy year 2']},
+wa:{n:'GREAT Wealth Advantage 4',best:'Grow wealth or plan for retirement, with spare cash flow to invest.',f:['100% of premiums invested from day one','Welcome, loyalty and premium bonuses as extra units','Death, disability and terminal illness cover included','Fund value moves with the market — not guaranteed']}
+};
+const G={
+cc:{n:'GREAT Critical Cover',best:'A dedicated CI payout, on top of life cover.',f:['Complete: 53 illnesses at all stages, premium locked in at entry','Top 3: cancer, heart attack, stroke — simpler application','Add Protect Me Again: up to 3 claims at 100% each']},
+hp:{n:'GREAT SupremeHealth P Plus with GREAT TotalCare 2 (P)',best:'Private hospital and specialist access, with the deductible and co-insurance covered.',f:['Covers private and restructured hospitals, as-charged','GREAT TotalCare 2 (P) covers the deductible and co-insurance the base plan leaves behind','No cash deposit needed at admission']},
+ha:{n:'GREAT SupremeHealth A Plus with GREAT TotalCare 2 (A)',best:'A ward care at restructured hospitals, for a lower premium.',f:['Builds on MediShield Life','Covers Class A wards and below, as-charged','GREAT TotalCare 2 (A) covers the deductible and co-insurance the base plan leaves behind']},
+active:{n:'GREAT Protector Active',best:'For active clients or higher accident exposure.',f:['Up to S$3 million for major permanent disablement','1.5x cover for road accidents and accidents overseas','Medical reimbursement up to S$7,500 per accident']},
+junior:{n:'GREAT Junior Protector',best:'For the client\'s children.',f:['Up to 3x payout on accidental death or disablement','Daily hospital cash benefit','Medical reimbursement up to S$9,000']},
+golden:{n:'GREAT Golden Protector',best:'For older clients — check the entry age.',f:['Up to 300% payout, S$200 daily hospital cash','Up to S$25,000 for fractures or burns','25% off with a second life assured']}
+};
+G.cs={n:'GREAT CareShield',best:'For clients with CareShield Life or ElderShield wanting cover for milder disability.',f:['Monthly payouts for life if unable to do 1 of 6 daily activities','Lump sum up to S$15,000, payable again for an unrelated cause','Premiums waived while unable to do 1 activity — fixed at entry age','Requires an existing CareShield Life or ElderShield policy']};
+G.active.ref='Published rates: from S$27.98/mo (Basic), S$45.46 (Classic), S$74.32 (Elite).';
+G.hp.ref='Figures are GE\'s official "GREAT SupremeHealth and GREAT TotalCare 2" Benefit Schedule and Premium Rates, for cover starting from 1 April 2026 (Singapore citizen/PR, standard lives, inclusive of GST). The GSH P Plus premium is payable via MediSave up to the prevailing withdrawal limits; the GREAT TotalCare 2 (P) rider is cash-only — GREAT TotalCare 2 is not a MediSave-approved Integrated Shield plan. Excludes hospital cash and the GREAT TotalCare Plus 2 Essential rider, per your request. Premium rates shown apply for new business up to age 75 next birthday; rates from age 76 apply to renewals only and are higher — check the full table for older clients.';
+G.ha.ref='Figures are GE\'s official "GREAT SupremeHealth and GREAT TotalCare 2" Benefit Schedule and Premium Rates, for cover starting from 1 April 2026 (Singapore citizen/PR, standard lives, inclusive of GST). The GSH A Plus premium is payable via MediSave up to the prevailing withdrawal limits; the GREAT TotalCare 2 (A) rider is cash-only. Excludes hospital cash and the GREAT TotalCare Plus 2 Essential rider, per your request. Premium rates shown apply for new business up to age 75 next birthday; rates from age 76 apply to renewals only and are higher.';
+P.la.ref='Also: Non-Lapse Guarantee keeps the policy in force for the first 10 years even if account value hits zero, as long as premiums are paid. GLA4 is protection-focused, not built for accumulation like GWA4 — the minimum premium is only sized to keep the account value positive to about 75, at a conservative 4% p.a. Higher funding, or the 8% capital-growth rate GWA4 illustrates, changes that outlook — see the retirement snapshot below. Insurance charges (age, gender, smoking-dependent) are not published and are not modelled. Benefits above are from GE\'s internal GLA4 Product Information Pack (accurate 11 Dec 2024).';
+P.lm.ref='Example (OCBC): age 30, S$100,000 base, 10x multiplier, 30-yr premium term — S$4,682/yr.';
+function termRate1000(age){return 0.9*Math.pow(1.07,age-25);}
+const GSH_P_PLUS=[[3,544.44],[20,512.83],[25,686.31],[30,751.71],[35,1134.11],[40,1183.16],[45,1930.83],[50,1994.05],[55,3009.97],[60,3601.84],[63,5093.15],[65,5120.40],[68,6881.73],[70,7329.72],[73,8397.73],[75,10189.38],[999,10189.38]];
+const GSH_A_PLUS=[[3,287.20],[20,285.02],[25,398.55],[30,398.55],[35,637.07],[40,655.60],[45,895.33],[50,917.13],[55,1287.77],[60,1439.28],[63,1825.33],[65,2013.90],[68,2485.76],[70,2790.96],[73,3303.07],[75,3913.16],[999,3913.16]];
+const GTC2_P=[[3,977.73],[20,842.57],[25,887.26],[30,893.80],[35,935.22],[40,1034.41],[45,1507.47],[50,1697.13],[55,2334.78],[60,3217.68],[63,4532.22],[65,4993.29],[68,6035.33],[70,6530.19],[73,7414.18],[75,8288.36],[999,8288.36]];
+const GTC2_A=[[3,118.81],[20,77.39],[25,88.29],[30,88.29],[35,109.00],[40,128.62],[45,167.86],[50,210.37],[55,284.49],[60,393.49],[63,490.50],[65,573.34],[68,661.63],[70,757.55],[73,855.65],[75,966.83],[999,966.83]];
+function annualLookup(table,age){for(const [th,v] of table)if(age<=th)return v;return table[table.length-1][1];}
+function hospGauge(age,ward){
+  const base=annualLookup(ward==='p'?GSH_P_PLUS:GSH_A_PLUS,age);
+  const gtc=annualLookup(ward==='p'?GTC2_P:GTC2_A,age);
+  return{base,gtc,total:base+gtc};
+}
+function gauge(k,age){
+  const t=termRate1000(age);
+  const per100k=r=>'about S$'+(r*100/12).toFixed(0)+' a month per S$100,000 sum assured';
+  if(k==='term')return per100k(t)+' (age-based estimate)';
+  if(k==='cc')return per100k(t*1.8)+' (age-based estimate, CI rider-style pricing)';
+  if(k==='lm')return per100k(t*9)+', limited-pay whole life is priced well above term';
+  if(k==='la')return per100k(t*6)+', minimum S$100 a month regardless of amount';
+  if(k==='hp'||k==='ha'){
+    const g=hospGauge(age,k==='hp'?'p':'a');
+    return 'GSH '+(k==='hp'?'P Plus':'A Plus')+' ~'+fmt(g.base)+'/yr + GREAT TotalCare 2 ('+(k==='hp'?'P':'A')+') ~'+fmt(g.gtc)+'/yr = about '+fmt(g.total)+'/yr (~'+fmt(g.total/12)+'/mo)';
+  }
+  if(k==='active')return 'about S$45 a month (mid tier); tiers range roughly S$28 to S$74';
+  return null;
+}
+const gaugeNote='Rough gauge only, not a quote — run the actual case in your quotation system.';
+function renderLaSnapshot(annual,age){
+  if(annual<=0)return '<p class="empty" style="margin:6px 0 0">Enter an annual premium above to see a retirement snapshot.</p>';
+  const years=Math.max(5,70-(age||40));
+  const proj=rate=>{let av=0;for(let y=1;y<=years;y++){av=av*(1+rate)-60+annual;if(av<0)av=0;}return av;};
+  const v4=proj(0.04),v8=proj(0.08);
+  return '<div style="margin-top:8px"><b>Retirement snapshot</b>, account value at age 70 (in '+years+' years)<br>'+
+    '<div style="margin:6px 0">At 4% p.a. (GE\'s conservative sustainability rate): about '+fmt(v4)+'</div>'+
+    '<div>At 8% p.a. (GWA4\'s illustrated capital-growth rate): about '+fmt(v8)+'</div>'+
+    '<div class="ref" style="margin-top:6px">Both scenarios only model fund growth less the S$5/month policy fee. Insurance charges (mortality cost, based on age, gender and smoking status) are not published and are not included — they would reduce these figures, more so as the client ages. Not a benefit illustration.</div></div>';
+}
+const catOf=k=>({term:'Life & wealth',lm:'Life & wealth',la:'Life & wealth',wa:'Life & wealth',cc:'CI',hp:'Hospital',ha:'Hospital',active:'Accident',golden:'Accident',junior:'Accident',cs:'Long-term care'})[k]||'Other';
+const colors={'Life & wealth':'#1F6F78','CI':'#B7791F','Hospital':'#5B8FB9','Accident':'#8A98A3','Long-term care':'#7D5BA6'};
+const WB_TABLE={5:[[1200,0],[2400,0],[3600,0],[6000,0.15],[12000,0.30]],10:[[1200,0],[2400,0.05],[3600,0.10],[6000,0.20],[12000,0.40]],15:[[1200,0.075],[2400,0.15],[3600,0.25],[6000,0.30],[12000,0.55]]};
+function policyFeeRate(choice,y){
+  if(choice==15)return y<=15?0.015:0.007;
+  return y<=10?0.025:0.007;
+}
+function waProjection(lump,annual,choice,years,stopAtTerm){
+  let wb=0;
+  if(annual>=1200){WB_TABLE[choice].forEach(([th,p])=>{if(annual>=th)wb=p;});}
+  const loyaltyStart=choice==15?15:10,premBonusStart=choice==5?6:choice==10?11:16;
+  const stopYear=stopAtTerm?Number(choice):0;
+  const fixedFee=(choice!=5&&annual<6000)?60:0;
+  let av=lump;const rows=[];
+  for(let y=1;y<=years;y++){
+    const paying=!stopYear||y<=stopYear;
+    const yearPrem=paying?annual:0;
+    av*=(1+0.08-policyFeeRate(choice,y));
+    av-=fixedFee;
+    av+=yearPrem;
+    if(y===1&&paying)av+=annual*wb;
+    if(y>=loyaltyStart)av+=av*0.003;
+    if(y>=premBonusStart)av+=yearPrem*0.02;
+    if(av<0)av=0;
+    if(y%5===0||y===years||y===stopYear)rows.push({y,av});
+  }
+  return{wb,loyaltyStart,premBonusStart,rows};
+}
+function payoutPhase(startAV,extraYears,choice,startYear){
+  let av=startAV;const rows=[];
+  for(let i=1;i<=extraYears;i++){
+    const y=startYear+i;
+    const dividend=av*0.06;
+    av=av*(1+0.08-policyFeeRate(choice,y))-dividend;
+    rows.push({y,dividend,av});
+  }
+  return rows;
+}
+function renderWaTimeline(lump,annual,age,choice,convertYear,stopAtTerm){
+  choice=choice||'10';
+  const commit=choice=='15'?15:10;
+  const defaultYears=Math.min(30,Math.max(commit,65-(age||40)));
+  const selector='<label class="q">Premium term <select class="wa-choice">'+['5','10','15'].map(c=>'<option value="'+c+'"'+(c===choice?' selected':'')+'>Choice '+c+' ('+c+'-yr premiums, '+(c=='15'?15:10)+'-yr commitment)</option>').join('')+'</select></label>'+
+    '<label class="chk" style="margin-top:8px"><input type="checkbox" class="wa-stopatterm"'+(stopAtTerm?' checked':'')+'> Client stops paying after the '+commit+'-year premium term</label>'+
+    '<label class="q">Convert to dividend fund after year <input type="number" class="wa-convert" min="1" placeholder="'+defaultYears+'" value="'+(convertYear||'')+'"></label>';
+  if(lump<=0&&annual<=0)return selector+'<p class="empty" style="margin:6px 0 0">Add a lump sum budget, a monthly investment budget, or an annual premium above to see a growth and income timeline.</p>';
+  const years=convertYear>0?convertYear:defaultYears;
+  const{wb,loyaltyStart,premBonusStart,rows}=waProjection(lump,annual,choice,years,stopAtTerm);
+  const max=Math.max(...rows.map(r=>r.av),1);
+  const bars=rows.map(r=>'<div style="display:flex;align-items:center;gap:8px;margin:6px 0"><span style="width:48px;font-size:.8rem">Yr '+r.y+'</span><div style="flex:1;background:var(--line);border-radius:4px;height:16px"><div style="background:var(--core);height:16px;border-radius:4px;width:'+(r.av/max*100)+'%"></div></div><span style="width:110px;font-size:.8rem;text-align:right">'+fmt(r.av)+'</span></div>').join('');
+  const last=rows[rows.length-1];
+  const extraYears=10;
+  let reinvestVal=last.av;
+  for(let i=1;i<=extraYears;i++)reinvestVal*=(1+0.08-policyFeeRate(choice,last.y+i));
+  const payoutRows=payoutPhase(last.av,extraYears,choice,last.y);
+  const firstPayout=payoutRows[0],lastPayout=payoutRows[payoutRows.length-1];
+  const feeNote=choice==15?'1.50% p.a. of account value in years 1–15, then 0.70% p.a.':'2.50% p.a. of account value in years 1–10, then 0.70% p.a.';
+  const fixedFeeNote=(choice!=5)?' Plus a fixed S$5 a month if the annual premium stays under S$6,000.':'';
+  const stopNote=stopAtTerm?'<div class="ref">Premiums assumed to stop after year '+commit+', using GWA4\'s penalty-free basic regular premium reduction available from that policy anniversary — no premium holiday charge applies. Welcome and Premium Bonus stop once premiums stop; Loyalty Bonus continues as long as there is no withdrawal.</div>':'';
+  return selector+
+    '<div style="margin-top:10px"><b>Capital growth fund</b>, illustrated at 8% p.a. less the policy fee, to year '+years+'<br>'+bars+'</div>'+
+    '<div class="ref" style="margin-top:8px"><b>Converting to a dividend-paying fund (6% p.a., paid monthly) at year '+last.y+', for '+extraYears+' more years:</b></div>'+
+    '<div class="ref">Reinvest: grows to about '+fmt(reinvestVal)+' by year '+(last.y+extraYears)+'.</div>'+
+    '<div class="ref">Paid out to the client\'s bank instead: about '+fmt(firstPayout.dividend)+'/yr ('+fmt(firstPayout.dividend/12)+'/mo) at first, leaving about '+fmt(lastPayout.av)+' still invested by year '+(last.y+extraYears)+'.</div>'+
+    '<details style="margin-top:8px"><summary style="font-size:.85rem;color:var(--muted)">More detail</summary>'+
+    '<div class="ref" style="margin-top:6px">Welcome Bonus: '+(wb*100).toFixed(1)+'% of year-1 annual premium. Loyalty Bonus (0.30% of account value) from year '+loyaltyStart+'. Premium Bonus (2% of each premium) from year '+premBonusStart+'. Policy fee: '+feeNote+'.'+fixedFeeNote+'</div>'+stopNote+
+    '<div class="ref">Welcome, Loyalty and Premium Bonus rates, the policy fee schedule and premium reduction terms are from GE\'s internal GWA4 Product Information Pack (accurate 28 Jun 2024). The 8% and 6% rates are the plan\'s own illustrated rates, not guaranteed. The monthly insurance charge (age, gender, smoking-dependent) and any early surrender charge are not modelled. Illustrative only — run the actual case in your quotation system.</div>'+
+    '</details>';
+}
+const card=(k,p,lab,held,cls,strong,age)=>{
+  const g=gauge(k,age);
+  const wa=k==='wa'?'<div class="wa-tl" data-age="'+age+'">'+renderWaTimeline(0,0,age,'10')+'</div>':'';
+  const la=k==='la'?'<div class="la-tl" data-age="'+age+'">'+renderLaSnapshot(0,age)+'</div>':'';
+  const premLabel=k==='wa'?'Annual premium (for the timeline)':'Annual premium';
+  const details=[];
+  if(p.ref)details.push(p.ref);
+  if(g)details.push('<b>Rough gauge:</b> '+g+' '+gaugeNote);
+  const detailsBlock=details.length?'<details style="margin-top:8px"><summary style="font-size:.85rem;color:var(--muted)">More detail</summary>'+details.map(d=>'<div class="ref" style="margin-top:6px">'+d+'</div>').join('')+'</details>':'';
+  return '<div class="item '+cls+(held?' held':'')+'" data-k="'+k+'"><h3>'+p.n+' <span class="tag'+(strong?' best':'')+'">'+lab+(held?', already held, check it is enough':'')+'</span></h3><div>'+p.best+'</div><ul>'+p.f.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+detailsBlock+'<label class="q">'+premLabel+' <input type="text" inputmode="numeric" class="qt" placeholder="e.g. 6,000"></label><div class="ref qtm">Enter an annual premium to see the monthly equivalent.</div>'+wa+la+'</div>';
+};
+function build(){
+  const age=+$('age').value,dep=+$('dep').value,inc=rawNum($('inc')),sav=rawNum($('sav')),exp=rawNum($('exp')),lump=rawNum($('lump')),occ=+$('occ').value;
+  const smoker=$('smoker').checked,sports=$('sports').checked;
+  const notes=[];
+  if(smoker)notes.push('Smoker: quote at smoker rates.');
+  if(age>=60)notes.push('Age 60+: underwriting is stricter — confirm insurability first.');
+  if(occ===2||sports)notes.push('Higher-risk work or sport: check loadings and exclusions.');
+  if(sav>=3*inc)notes.push('Strong savings: wealth and legacy planning may matter more than protection gaps.');
+  else if(sav<inc*0.25&&inc>0)notes.push('Low savings: protection is likely the priority over wealth building.');
+  if(exp>0){
+    const months=sav/(exp/12);
+    if(months<3)notes.push('Savings cover only ~'+months.toFixed(1)+' months of expenses (usual guide: 3 to 6). Build an emergency fund before big premium commitments.');
+    else if(months>=6)notes.push('Savings cover ~'+months.toFixed(0)+' months of expenses — a healthy emergency fund.');
+    if(exp>=inc)notes.push('Expenses match or exceed income — keep new premiums modest.');
+  }
+  if(lump>0)notes.push('Lump sum of '+fmt(lump)+': consider a top-up into GWA4 or GLA4 alongside regular premiums.');
+  const existDeath=rawNum($('existDeath')),existCI=rawNum($('existCI'));
+  const totalDeath=10*inc,totalCI=5*inc;
+  const gapDeath=Math.max(0,totalDeath-sav-existDeath),gapCI=Math.max(0,totalCI-sav-existCI);
+  const cover={death:gapDeath,ci:gapCI,totalDeath,totalCI,existDeath,existCI};
+  return{notes,cover};
+}
+function svgPie(cats){
+  const labels=Object.keys(cats),vals=Object.values(cats),total=vals.reduce((a,b)=>a+b,0);
+  if(!total)return '<p class="empty" style="margin:0">Enter annual premiums below to see the split.</p>';
+  let a0=-90,parts='';const cx=100,cy=100,r=80;
+  labels.forEach((l,i)=>{
+    const frac=vals[i]/total,a1=a0+frac*360;
+    const toXY=a=>[cx+r*Math.cos(a*Math.PI/180),cy+r*Math.sin(a*Math.PI/180)];
+    const [x0,y0]=toXY(a0),[x1,y1]=toXY(a1),large=(a1-a0)>180?1:0;
+    parts+='<path d="M'+cx+','+cy+' L'+x0.toFixed(1)+','+y0.toFixed(1)+' A'+r+','+r+' 0 '+large+' 1 '+x1.toFixed(1)+','+y1.toFixed(1)+' Z" fill="'+(colors[l]||'#999')+'"><title>'+l+': '+fmt(vals[i])+' a year</title></path>';
+    a0=a1;
+  });
+  const legend=labels.map(l=>'<span style="display:inline-flex;align-items:center;gap:4px;margin:2px 8px 2px 0"><span style="width:10px;height:10px;background:'+(colors[l]||'#999')+';border-radius:2px;display:inline-block"></span>'+l+'</span>').join('');
+  return '<svg viewBox="0 0 200 200" style="width:180px;height:180px;display:block;margin:0 auto">'+parts+'</svg><div style="text-align:center;font-size:.82rem;margin-top:8px">'+legend+'</div>';
+}
+function svgBar(labels,vals,cols){
+  const max=Math.max(...vals,1);
+  return labels.map((l,i)=>'<div style="margin:8px 0"><div style="font-size:.85rem;margin-bottom:3px">'+l+': '+fmt(vals[i])+'</div><div style="background:var(--line);border-radius:4px;height:14px;width:100%"><div style="background:'+cols[i]+';height:14px;border-radius:4px;width:'+(vals[i]/max*100)+'%"></div></div></div>').join('');
+}
+function svgStackedBar(labels,existingArr,gapArr){
+  const max=Math.max(...labels.map((l,i)=>existingArr[i]+gapArr[i]),1);
+  return labels.map((l,i)=>{
+    const tot=existingArr[i]+gapArr[i];
+    const exPct=existingArr[i]/max*100,gapPct=gapArr[i]/max*100;
+    return '<div style="margin:10px 0"><div style="font-size:.85rem;margin-bottom:3px">'+l+' — total need '+fmt(tot)+'</div>'+
+      '<div style="background:var(--line);border-radius:4px;height:16px;width:100%;display:flex;overflow:hidden">'+
+      (existingArr[i]>0?'<div style="background:var(--opt);height:16px;width:'+exPct+'%"></div>':'')+
+      (gapArr[i]>0?'<div style="background:var(--core);height:16px;width:'+gapPct+'%"></div>':'')+
+      '</div><div style="font-size:.78rem;color:var(--muted);margin-top:2px">Existing: '+fmt(existingArr[i])+'  ·  Recommended new cover: '+fmt(gapArr[i])+'</div></div>';
+  }).join('')+'<div style="font-size:.78rem;color:var(--muted);margin-top:4px"><span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px"><span style="width:10px;height:10px;background:var(--opt);border-radius:2px;display:inline-block"></span>Existing cover</span><span style="display:inline-flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:var(--core);border-radius:2px;display:inline-block"></span>Recommended new cover</span></div>';
+}
+function updChartsForSuite(suiteEl){
+  const cats={};
+  suiteEl.querySelectorAll('.item[data-k]').forEach(it=>{
+    const a=rawNum(it.querySelector('.qt'));
+    it.querySelector('.qtm').textContent=a>0?'≈ '+fmt(a/12)+' a month':'Enter an annual premium to see the monthly equivalent.';
+    if(a<=0)return;
+    const cat=catOf(it.dataset.k);cats[cat]=(cats[cat]||0)+a;
+  });
+  const vals=Object.values(cats);
+  const premChartEl=suiteEl.querySelector('.premChart');
+  if(premChartEl)premChartEl.innerHTML=svgPie(cats);
+  const waEl=suiteEl.querySelector('.item[data-k="wa"]');
+  if(waEl){
+    const tlDiv=waEl.querySelector('.wa-tl');
+    const ownAnnual=rawNum(waEl.querySelector('.qt'));
+    const invBud=rawNum($('invBud'));
+    const annual=ownAnnual>0?ownAnnual:invBud*12;
+    const lump=rawNum($('lump')),age=+tlDiv.dataset.age||40;
+    const curSel=tlDiv.querySelector('.wa-choice'),choice=curSel?curSel.value:'10';
+    const curStop=tlDiv.querySelector('.wa-stopatterm'),stopAtTerm=curStop?curStop.checked:false;
+    const curConv=tlDiv.querySelector('.wa-convert'),convertYear=curConv?+curConv.value||0:0;
+    tlDiv.innerHTML=renderWaTimeline(lump,annual,age,choice,convertYear,stopAtTerm);
+    const newSel=tlDiv.querySelector('.wa-choice');
+    if(newSel)newSel.addEventListener('change',()=>updChartsForSuite(suiteEl));
+    const newStop=tlDiv.querySelector('.wa-stopatterm');
+    if(newStop)newStop.addEventListener('change',()=>updChartsForSuite(suiteEl));
+    const newConv=tlDiv.querySelector('.wa-convert');
+    if(newConv)newConv.addEventListener('input',()=>updChartsForSuite(suiteEl));
+  }
+  const laEl=suiteEl.querySelector('.item[data-k="la"]');
+  if(laEl){
+    const laDiv=laEl.querySelector('.la-tl');
+    const laAnnual=rawNum(laEl.querySelector('.qt')),laAge=+laDiv.dataset.age||40;
+    laDiv.innerHTML=renderLaSnapshot(laAnnual,laAge);
+  }
+  const bud=rawNum($('bud')),inc=rawNum($('inc')),lump=rawNum($('lump')),invBud=rawNum($('invBud'));
+  const annualTotal=vals.reduce((a,b)=>a+b,0),monthlyTotal=annualTotal/12;
+  let m='<b>Budget check</b><br>';
+  m+=bud>0?'Client budget: '+fmt(bud)+' a month':'A common guide is 10% to 15% of income, about '+fmt(inc/12*0.10)+' to '+fmt(inc/12*0.15)+' a month';
+  m+='<br>Annual premiums entered so far: <b>'+fmt(annualTotal)+' a year</b> (≈ '+fmt(monthlyTotal)+' a month)';
+  if(bud>0&&monthlyTotal>bud)m+='<br><span class="over">Over budget by '+fmt(monthlyTotal-bud)+' a month</span>';
+  else if(bud>0&&monthlyTotal>0)m+='<br>Within budget, '+fmt(bud-monthlyTotal)+' a month to spare';
+  if(lump>0)m+='<br>Lump sum budget: '+fmt(lump);
+  if(invBud>0)m+='<br>Monthly investment-only budget: '+fmt(invBud);
+  const totTextEl=suiteEl.querySelector('.totText');
+  if(totTextEl)totTextEl.innerHTML=m;
+}
+function updAllSuites(){document.querySelectorAll('.suite').forEach(updChartsForSuite);}
+function suiteBlock(n,lifeK,label,blurb,ctx){
+  const{age,dep,have,wealthWanted,ward,accWanted,ltcWanted,goal}=ctx;
+  let h='<div class="suite" data-suite="'+n+'">';
+  h+='<h2>Option '+n+': '+label+(lifeK===goal?' <span class="tag best" style="margin-left:8px">Matches stated goal</span>':'')+'</h2>';
+  h+='<p class="sub" style="margin:0 0 14px">'+blurb+'</p>';
+  h+=card(lifeK,P[lifeK],'Core life cover',have.has(lifeK),'p3',true,age);
+  h+=card('cc',G.cc,'Critical illness add-on',have.has('ci'),'p2',false,age);
+  if(wealthWanted)h+=card('wa',P.wa,'Wealth accumulation add-on',have.has('wa'),'p2',false,age);
+  if(ward==='p'||ward==='a')h+=card(ward==='p'?'hp':'ha',ward==='p'?G.hp:G.ha,'Hospital add-on',have.has('hosp'),'p2',false,age);
+  if(accWanted){
+    h+=card('active',G.active,'Accident add-on',have.has('acc'),'p2',false,age);
+    if(age>=40)h+=card('golden',G.golden,'Accident add-on',false,'p1',false,age);
+    if(dep>0)h+=card('junior',G.junior,'Accident add-on, for the children',false,'p1',false,age);
+  }
+  if(ltcWanted)h+=card('cs',G.cs,'Long-term care add-on',have.has('cs'),'p2',false,age);
+  h+='<div class="cover"><div class="totText"></div><div class="chartwrap premChart"></div></div>';
+  h+='</div>';
+  return h;
+}
+$('f').addEventListener('submit',e=>{
+  e.preventDefault();
+  const {notes,cover}=build();
+  const age=+$('age').value,dep=+$('dep').value;
+  const have=new Set([...document.querySelectorAll('[name=have]:checked')].map(e=>e.value));
+  const ward=$('ward').value,wealthWanted=$('wealth').value==='y',ltcWanted=$('ltc').value==='y',accWanted=$('accint').value==='y',goal=$('goal').value;
+  const ctx={age,dep,have,wealthWanted,ward,accWanted,ltcWanted,goal};
+  lastRec={ward,accWanted,ltcWanted,have,wealthWanted};
+  let h=notes.map(n=>'<div class="note">'+n+'</div>').join('');
+  h+='<div class="cover"><b>Recommended vs existing, by tier</b><div class="pyr-wrap" style="margin-top:12px">'+renderPyramid()+'</div></div>';
+  h+='<div class="cover"><b>Coverage summary</b>: recommended vs existing<div class="chartwrap" id="covChart"></div></div>';
+  h+='<p class="sub" style="margin:4px 0 18px">Three complete suites below — only the core life plan changes between them; the add-ons stay the same so they can be compared side by side.</p>';
+  h+=suiteBlock(1,'term','Term-based suite','Lowest premium, most cover while working — a good fit if budget is tight or cover is mainly needed during income-earning years.',ctx);
+  h+=suiteBlock(2,'lm','Life Multiplier-based suite','Lifelong cover with a limited pay period — a middle ground between cost today and cover for life.',ctx);
+  h+=suiteBlock(3,'la','Life Advantage 4-based suite','The most comprehensive, lifelong plan, with GISA cover increases and retirement-stage flexibility.',ctx);
+  $('res').className='';$('res').innerHTML=h;
+  bindPyramid($('res'),true);
+  $('covChart').innerHTML=svgStackedBar(['Death & disability','Critical illness'],[cover.existDeath,cover.existCI],[cover.death,cover.ci]);
+  updAllSuites();
+  document.querySelectorAll('.qt').forEach(e=>{bindCurrency(e);e.addEventListener('input',updAllSuites);});
+  ['lump','invBud'].forEach(id=>{const el=$(id);if(!el.dataset.bound){bindCurrency(el);el.addEventListener('input',updAllSuites);el.dataset.bound='1';}});
+  $('res').scrollIntoView({behavior:'smooth',block:'start'});
+});
+['inc','sav','exp','bud','existDeath','existCI','cpfOA','cpfSA','cpfMA','cpfSalary','cpfInst'].forEach(id=>bindCurrency($(id)));
+function recalcExisting(){
+  let death=0,ci=0;
+  document.querySelectorAll('.have-cb').forEach(cb=>{
+    const row=cb.closest('.chk-row'),amtEl=row?row.querySelector('.have-amt'):null;
+    if(!amtEl||!cb.checked)return;
+    const v=rawNum(amtEl);
+    if(cb.dataset.bucket==='death')death+=v;
+    else if(cb.dataset.bucket==='ci')ci+=v;
+  });
+  $('existDeath').value=death>0?'S$'+death.toLocaleString('en-SG'):'';
+  $('existCI').value=ci>0?'S$'+ci.toLocaleString('en-SG'):'';
+}
+document.querySelectorAll('.have-cb').forEach(cb=>{
+  cb.addEventListener('change',()=>{
+    const row=cb.closest('.chk-row'),amtEl=row?row.querySelector('.have-amt'):null;
+    if(amtEl){amtEl.hidden=!cb.checked;if(!cb.checked)amtEl.value='';}
+    recalcExisting();
+  });
+});
+document.querySelectorAll('.have-amt').forEach(el=>{bindCurrency(el);el.addEventListener('input',recalcExisting);});
+$('cpfHouse').addEventListener('change',()=>{$('cpfInstWrap').hidden=$('cpfHouse').value!=='y';});
+document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p=>p.hidden=p.dataset.panel!==btn.dataset.tab);
+}));
+const PYRAMID=[
+  {row:'Protection foundation',color:'#6E1725',cells:[
+    {k:'hosp',label:'Hospital',why:'Covers the biggest, most unpredictable bills first — the base of the pyramid.'},
+    {k:'rider',label:'Hospital rider',why:'Look for a high claim cap, low co-insurance, and strong day-surgery/outpatient (CDL) coverage.'},
+    {k:'acc',label:'Accident',why:'A lump sum or income top-up for accidental injury, disablement or death.'},
+    {k:'ltc',label:'Long-term care',why:'Monthly payouts if the client can no longer manage daily activities.'}
+  ]},
+  {row:'Critical illness',color:'#8C1F2F',cells:[
+    {k:'earlyci',label:'Early CI',why:'A cash payout at first diagnosis, before it becomes advanced.'},
+    {k:'lateci',label:'Late-stage CI',why:'Covers the bigger income and treatment gap of an advanced diagnosis.'},
+    {k:'relapse',label:'Relapse CI',why:'Pays out again if the illness relapses or a second, unrelated CI occurs.'}
+  ]},
+  {row:'Life',color:'#A85A2E',cells:[
+    {k:'life',label:'Life (Death / TPD / TI)',why:'Replaces income and settles debts for the family — the base every tier above sits on.'}
+  ]},
+  {row:'Investments and savings',color:'#A9852E',cells:[
+    {k:'wealth',label:'Investments and savings',why:'Once the base is solid, this grows wealth and builds a legacy or retirement fund — valuable once protection is in place, not before.'}
+  ]}
+];
+let lastRec=null;
+function pyramidCellData(k){
+  if(!lastRec)return null;
+  const {ward,accWanted,ltcWanted,have,wealthWanted}=lastRec;
+  if(k==='hosp')return [ward==='p'?'GREAT SupremeHealth P Plus':ward==='a'?'GREAT SupremeHealth A Plus':'Not specified by client'];
+  if(k==='rider')return [ward?'GREAT TotalCare 2 ('+(ward==='p'?'P':'A')+') — covers the deductible and co-insurance, no cash deposit at admission':'Not specified by client'];
+  if(k==='acc')return [accWanted?'GREAT Protector Active'+(have.has('acc')?' — already held, check it\'s enough':''):'Not specified by client'];
+  if(k==='ltc')return [ltcWanted?'GREAT CareShield'+(have.has('cs')?' — already held':''):'Not specified by client'];
+  if(k==='earlyci'||k==='lateci')return ['GREAT Critical Cover'+(have.has('ci')?' — already held, check it\'s enough':'')+' — covers all stages, from early to advanced'];
+  if(k==='relapse')return ['Add Protect Me Again to GREAT Critical Cover — up to 3 claims at 100% each'];
+  if(k==='life')return ['See the 3 suite options below — '+P.term.n+', '+P.lm.n+' or '+P.la.n];
+  if(k==='wealth')return [wealthWanted?'GREAT Wealth Advantage 4'+(have.has('wa')?' — already held, check it\'s enough':''):'Not specified by client'];
+}
+function renderPyramid(){
+  const n=PYRAMID.length;
+  return PYRAMID.map((row,ri)=>{
+    const bottom=ri*(50/n),top=(ri+1)*(50/n);
+    const pad=bottom*0.75+top*0.25;
+    const cells=row.cells.map(c=>'<div class="pyr-cell" data-k="'+c.k+'">'+c.label+'</div>').join('');
+    return '<div class="pyr-row">'+
+      '<div class="pyr-bg" style="clip-path:polygon('+top+'% 0,'+(100-top)+'% 0,'+(100-bottom)+'% 100%,'+bottom+'% 100%);background:'+row.color+'"></div>'+
+      '<div class="pyr-fg" style="padding-left:'+pad+'%;padding-right:'+pad+'%">'+cells+'</div>'+
+    '</div>';
+  }).reverse().join('')+'<div class="pyr-panel-slot"></div>';
+}
+function bindPyramid(container,withData){
+  container.querySelectorAll('.pyr-cell').forEach(el=>el.addEventListener('click',()=>{
+    const k=el.dataset.k,cell=PYRAMID.flatMap(r=>r.cells).find(c=>c.k===k),panel=container.querySelector('.pyr-panel-slot');
+    let html='<b>'+cell.label+'</b><div style="margin-top:4px">'+cell.why+'</div>';
+    if(withData){
+      const rec=pyramidCellData(k);
+      if(rec)html+='<ul>'+rec.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+    }
+    panel.innerHTML='<div class="pyr-panel">'+html+'</div>';
+  }));
+}
+$('introPyramid').innerHTML=renderPyramid();
+bindPyramid($('introPyramid'),false);
+const CPF_ALLOC=[[35,62.17,16.21,21.62],[45,56.77,18.91,24.32],[50,51.36,21.62,27.02],[55,40.55,31.08,28.37],[60,35.30,33.82,30.88],[65,14.00,44.00,42.00],[70,6.07,30.30,63.63],[999,8.00,8.00,84.00]];
+const CPF_RATE=[[55,0.37],[60,0.34],[65,0.25],[70,0.165],[999,0.125]];
+function cpfAlloc(age){for(const r of CPF_ALLOC)if(age<=r[0])return{oa:r[1],sa:r[2],ma:r[3]};return CPF_ALLOC[CPF_ALLOC.length-1];}
+function cpfRate(age){for(const r of CPF_RATE)if(age<=r[0])return r[1];return CPF_RATE[CPF_RATE.length-1][1];}
+const FRS_2026=220400,FRS_GROWTH=0.035,PAYOUT_RATIO=1780/220400,DEFER_FACTOR=1.40;
+function calcCPF(){
+  const age=+$('age').value,oa0=rawNum($('cpfOA')),sa0=rawNum($('cpfSA')),salary=Math.min(8000,rawNum($('cpfSalary')));
+  if(!age){$('cpfRes').innerHTML='<p class="empty" style="margin:0">Enter the client\'s age in the Client tab first.</p>';return;}
+  if(age>=55){
+    $('cpfRes').className='';
+    $('cpfRes').innerHTML='<div class="cover"><b>Client is 55 or older</b><div class="ref" style="margin-top:4px">Their Full Retirement Sum was fixed in the year they turned 55 and their Retirement Account is already formed. The 2026 reference FRS is '+fmt(FRS_2026)+' for those turning 55 this year — check the client\'s actual RA balance and cohort FRS with CPF directly.</div></div>';
+    return;
+  }
+  const financingHouse=$('cpfHouse').value==='y',instalment=financingHouse?rawNum($('cpfInst')):0;
+  let oa=oa0,sa=sa0;const years=55-age;
+  for(let y=0;y<years;y++){
+    const a=age+y,rate=cpfRate(a),alloc=cpfAlloc(a);
+    const annual=salary*rate*12;
+    oa=oa*1.025+annual*alloc.oa/100;
+    if(financingHouse)oa=Math.max(0,oa-instalment*12);
+    sa=sa*1.04+annual*alloc.sa/100;
+  }
+  const projected=oa+sa;
+  const frsAt55=FRS_2026*Math.pow(1+FRS_GROWTH,years);
+  const shortfall=Math.max(0,frsAt55-projected);
+  let topUp=0;
+  if(shortfall>0&&years>0){
+    const fvFactor=12*((Math.pow(1.04,years)-1)/0.04);
+    topUp=fvFactor>0?shortfall/fvFactor:shortfall/(years*12);
+  }
+  const payout65=frsAt55*PAYOUT_RATIO,payout70=payout65*DEFER_FACTOR;
+  let h='<div class="cover"><b>Retirement sum at 55</b> (in '+years+' years)<br>';
+  h+='Projected OA + SA at 55, from current balances and contributions'+(financingHouse?' (net of housing instalments)':'')+': <b>'+fmt(projected)+'</b><br>';
+  h+='Full Retirement Sum needed (2026 base '+fmt(FRS_2026)+', growing 3.5% p.a.): <b>'+fmt(frsAt55)+'</b>';
+  if(shortfall>0)h+='<br><span class="over">Shortfall: '+fmt(shortfall)+'</span><br>To close this by 55, consider a voluntary top-up of about <b>'+fmt(topUp)+' a month</b> (e.g. into SA), on top of regular contributions.';
+  else h+='<br>On track — projected to meet or exceed the FRS by about '+fmt(projected-frsAt55)+'.';
+  h+='</div>';
+  h+='<div class="cover"><b>Estimated CPF LIFE payout (Standard Plan)</b><br>';
+  h+='From age 65: about <b>'+fmt(payout65)+' a month</b><br>';
+  h+='If deferred to age 70: about <b>'+fmt(payout70)+' a month</b> (deferring boosts payouts by roughly 6–7% for each year deferred)</div>';
+  h+='<details><summary style="font-size:.85rem;color:var(--muted)">More detail</summary><div class="ref" style="margin-top:6px">Uses CPF Board\'s January 2026 contribution and allocation rates, OA at 2.5% p.a. and SA/RA at 4% p.a. Extra interest tiers on the first S$60,000 (or S$30,000+S$30,000 for 55 and above) are not included, so this is a conservative estimate. Assumes a level monthly salary and contributions every year without a break.'+(financingHouse?' Housing instalments are assumed paid from OA every month, reducing OA growth.':' Assumes no withdrawals (e.g. for housing) before 55.')+' The FRS and CPF LIFE payout figures are illustrative, scaled from CPF Board\'s 2026 reference figures (FRS '+fmt(FRS_2026)+' pays about S$1,780 a month from 65) — not an official projection. Use CPF\'s Retirement Payout Planner for an authoritative figure.</div></details>';
+  $('cpfRes').className='';
+  $('cpfRes').innerHTML=h;
+}
+$('cpfCalc').addEventListener('click',calcCPF);
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredInstallPrompt=e;
+  const btn=$('installBtn');
+  if(btn)btn.hidden=false;
+});
+const installBtnEl=$('installBtn');
+if(installBtnEl)installBtnEl.addEventListener('click',async()=>{
+  if(!deferredInstallPrompt)return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt=null;
+  installBtnEl.hidden=true;
+});
+window.addEventListener('appinstalled',()=>{const btn=$('installBtn');if(btn)btn.hidden=true;});
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>{
+      reg.update().catch(()=>{});
+    }).catch(()=>{});
+  });
+  let swRefreshed=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(swRefreshed)return;
+    swRefreshed=true;
+    location.reload();
+  });
+}
+</script>
+</body>
+</html>
