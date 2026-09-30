@@ -362,10 +362,10 @@ function build(){
   if(lump>0)notes.push('Lump sum of '+fmt(lump)+': consider a top-up into GWA4 or GLA4 alongside regular premiums.');
   const existDeath=rawNum($('existDeath')),existCI=rawNum($('existCI'));
   const totalDeath=10*inc,totalCI=5*inc;
-  const remainDeath=Math.max(0,totalDeath-existDeath),remainCI=Math.max(0,totalCI-existCI);
-  const gapDeath=Math.max(0,remainDeath-sav),gapCI=Math.max(0,remainCI-sav);
-  const savAppliedDeath=remainDeath-gapDeath,savAppliedCI=remainCI-gapCI;
-  const cover={death:gapDeath,ci:gapCI,totalDeath,totalCI,existDeath,existCI,sav,savAppliedDeath,savAppliedCI};
+  // Recommended cover is offset by existing cover only — general savings/investments
+  // are shown separately (see notes above) but no longer reduce the recommended amount.
+  const gapDeath=Math.max(0,totalDeath-existDeath),gapCI=Math.max(0,totalCI-existCI);
+  const cover={death:gapDeath,ci:gapCI,totalDeath,totalCI,existDeath,existCI};
   return{notes,cover};
 }
 function svgPie(cats){
@@ -386,18 +386,17 @@ function svgBar(labels,vals,cols){
   const max=Math.max(...vals,1);
   return labels.map((l,i)=>'<div style="margin:8px 0"><div style="font-size:.85rem;margin-bottom:3px">'+l+': '+fmt(vals[i])+'</div><div style="background:var(--line);border-radius:4px;height:14px;width:100%"><div style="background:'+cols[i]+';height:14px;border-radius:4px;width:'+(vals[i]/max*100)+'%"></div></div></div>').join('');
 }
-function svgStackedBar(labels,existingArr,savArr,gapArr,totalArr){
+function svgStackedBar(labels,existingArr,gapArr,totalArr){
   const max=Math.max(...totalArr,1);
   return labels.map((l,i)=>{
-    const ex=existingArr[i],sv=savArr[i],gap=gapArr[i],tot=totalArr[i];
-    const exPct=ex/max*100,svPct=sv/max*100,gapPct=gap/max*100;
+    const ex=existingArr[i],gap=gapArr[i],tot=totalArr[i];
+    const exPct=ex/max*100,gapPct=gap/max*100;
     return '<div style="margin:10px 0"><div style="font-size:.85rem;margin-bottom:3px">'+l+' — total need '+fmt(tot)+'</div>'+
       '<div style="background:var(--line);border-radius:4px;height:16px;width:100%;display:flex;overflow:hidden">'+
       (ex>0?'<div style="background:var(--opt);height:16px;width:'+exPct+'%"></div>':'')+
-      (sv>0?'<div style="background:var(--gold);height:16px;width:'+svPct+'%"></div>':'')+
       (gap>0?'<div style="background:var(--core);height:16px;width:'+gapPct+'%"></div>':'')+
-      '</div><div style="font-size:.78rem;color:var(--muted);margin-top:2px">Existing cover: '+fmt(ex)+'  ·  Savings offset: '+fmt(sv)+'  ·  Recommended new cover: '+fmt(gap)+'</div></div>';
-  }).join('')+'<div style="font-size:.78rem;color:var(--muted);margin-top:4px"><span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px"><span style="width:10px;height:10px;background:var(--opt);border-radius:2px;display:inline-block"></span>Existing cover</span><span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px"><span style="width:10px;height:10px;background:var(--gold);border-radius:2px;display:inline-block"></span>Savings offset</span><span style="display:inline-flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:var(--core);border-radius:2px;display:inline-block"></span>Recommended new cover</span></div>';
+      '</div><div style="font-size:.78rem;color:var(--muted);margin-top:2px">Existing cover: '+fmt(ex)+'  ·  Recommended new cover: '+fmt(gap)+'</div></div>';
+  }).join('')+'<div style="font-size:.78rem;color:var(--muted);margin-top:4px"><span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px"><span style="width:10px;height:10px;background:var(--opt);border-radius:2px;display:inline-block"></span>Existing cover</span><span style="display:inline-flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:var(--core);border-radius:2px;display:inline-block"></span>Recommended new cover</span></div>';
 }
 function updChartsForSuite(suiteEl){
   const cats={};
@@ -465,8 +464,8 @@ function buildEmailHref(clientName,agentName,cover){
   lines.push('Cover plan summary'+(clientName?' for '+clientName:'')+', '+new Date().toLocaleDateString('en-SG'));
   if(agentName)lines.push('Prepared by '+agentName);
   lines.push('');
-  lines.push('Death & disability — total need '+fmt(cover.totalDeath)+', existing cover '+fmt(cover.existDeath)+', savings offset '+fmt(cover.savAppliedDeath)+', recommended new cover '+fmt(cover.death));
-  lines.push('Critical illness — total need '+fmt(cover.totalCI)+', existing cover '+fmt(cover.existCI)+', savings offset '+fmt(cover.savAppliedCI)+', recommended new cover '+fmt(cover.ci));
+  lines.push('Death & disability — total need '+fmt(cover.totalDeath)+', existing cover '+fmt(cover.existDeath)+', recommended new cover '+fmt(cover.death));
+  lines.push('Critical illness — total need '+fmt(cover.totalCI)+', existing cover '+fmt(cover.existCI)+', recommended new cover '+fmt(cover.ci));
   lines.push('');
   document.querySelectorAll('.suite').forEach(s=>{
     const a=+s.dataset.annual||0;
@@ -512,7 +511,7 @@ $('f').addEventListener('submit',e=>{
   h+='<div class="results-actions"><button type="button" id="printBtn" class="btn-sm">Print / Save as PDF</button><a id="emailBtn" class="btn-sm" style="text-decoration:none;display:inline-block" href="#">Email summary</a></div>';
   h+=notes.map(n=>'<div class="note">'+n+'</div>').join('');
   h+='<div class="cover"><b>Recommended vs existing, by tier</b><div class="pyr-wrap" style="margin-top:12px">'+renderPyramid()+'</div></div>';
-  h+='<div class="cover"><b>Coverage summary</b>: recommended vs existing<div class="ref" style="margin:2px 0 4px">Total need is 10× annual income (death/disability) or 5× annual income (critical illness), offset first by existing cover, then by current savings and investments the client could otherwise draw on.</div><div class="chartwrap" id="covChart"></div></div>';
+  h+='<div class="cover"><b>Coverage summary</b>: recommended vs existing<div class="ref" style="margin:2px 0 4px">Total need is 10× annual income (death/disability) or 5× annual income (critical illness), offset by existing cover only. Current savings and investments are noted above where relevant, but do not reduce the recommended amount.</div><div class="chartwrap" id="covChart"></div></div>';
   h+='<div class="cover"><b>Suite comparison, at a glance</b><div id="compareTable" style="margin-top:8px;overflow-x:auto"></div></div>';
   h+='<p class="sub" style="margin:4px 0 18px">Three complete suites below — only the core life plan changes between them; the add-ons stay the same so they can be compared side by side.</p>';
   h+=suiteBlock(1,'term','Term-based suite','Lowest premium, most cover while working — a good fit if budget is tight or cover is mainly needed during income-earning years.',ctx);
@@ -520,7 +519,7 @@ $('f').addEventListener('submit',e=>{
   h+=suiteBlock(3,'la','Life Advantage 4-based suite','The most comprehensive, lifelong plan, with GISA cover increases and retirement-stage flexibility.',ctx);
   $('res').className='';$('res').innerHTML=h;
   bindPyramid($('res'),true);
-  $('covChart').innerHTML=svgStackedBar(['Death & disability','Critical illness'],[cover.existDeath,cover.existCI],[cover.savAppliedDeath,cover.savAppliedCI],[cover.death,cover.ci],[cover.totalDeath,cover.totalCI]);
+  $('covChart').innerHTML=svgStackedBar(['Death & disability','Critical illness'],[cover.existDeath,cover.existCI],[cover.death,cover.ci],[cover.totalDeath,cover.totalCI]);
   $('printBtn').addEventListener('click',()=>window.print());
   $('emailBtn').addEventListener('click',ev=>{ev.preventDefault();window.location.href=buildEmailHref(clientName,agentName,cover);});
   updAllSuites();
