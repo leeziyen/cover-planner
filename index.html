@@ -72,11 +72,11 @@ summary:hover{color:var(--ink)}
 .chk-row{margin:9px 0}
 .chk-row .have-amt{margin:6px 0 0 26px;width:calc(100% - 26px);padding:8px 10px}
 .suite+.suite{margin-top:30px;padding-top:26px;border-top:2px solid var(--line)}
-.pyr-wrap{max-width:440px;margin:0 auto}
+.pyr-wrap{max-width:520px;margin:0 auto}
 .pyr-row{position:relative;margin:0;display:block}
 .pyr-bg{position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:2px}
 .pyr-fg{position:relative;z-index:1;display:flex}
-.pyr-cell{flex:1;padding:16px 6px;text-align:center;font-size:clamp(11px,2.3vw,12.5px);font-weight:700;color:#fff;cursor:pointer;line-height:1.3;display:flex;align-items:center;justify-content:center;min-height:44px;text-shadow:0 1px 2px rgba(0,0,0,.25);transition:filter .15s}
+.pyr-cell{flex:1;min-width:0;padding:14px 4px;text-align:center;font-size:clamp(9.5px,2vw,12.5px);font-weight:700;color:#fff;cursor:pointer;line-height:1.25;display:flex;align-items:center;justify-content:center;min-height:44px;text-shadow:0 1px 2px rgba(0,0,0,.25);transition:filter .15s;overflow-wrap:anywhere;hyphens:auto;word-break:break-word}
 .pyr-cell:hover{filter:brightness(1.08)}
 .pyr-panel{background:var(--card-soft);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:12px 14px;margin:10px 0 4px;font-size:.88rem;line-height:1.55}
 .pyr-panel ul{margin:8px 0 0;padding-left:18px}
@@ -491,7 +491,7 @@ const PYRAMID=[
     {k:'life',label:'Life (Death / TPD / TI)',why:'Replaces income and settles debts for the family — the base every tier above sits on.'}
   ]},
   {row:'Investments and savings',color:'#A9852E',cells:[
-    {k:'wealth',label:'Investments and savings',why:'Once the base is solid, this grows wealth and builds a legacy or retirement fund — valuable once protection is in place, not before.'}
+    {k:'wealth',label:'Investments & savings',why:'Once the base is solid, this grows wealth and builds a legacy or retirement fund — valuable once protection is in place, not before.'}
   ]}
 ];
 let lastRec=null;
@@ -511,8 +511,16 @@ function renderPyramid(){
   const n=PYRAMID.length;
   return PYRAMID.map((row,ri)=>{
     const bottom=ri*(50/n),top=(ri+1)*(50/n);
-    const pad=bottom*0.75+top*0.25;
-    const cells=row.cells.map(c=>'<div class="pyr-cell" data-k="'+c.k+'">'+c.label+'</div>').join('');
+    // Use the row's vertical midpoint width (not the wider bottom edge) so the
+    // text box always sits inside the sloped sides of the triangle, even
+    // though the row itself is drawn as a trapezoid slice of it.
+    const pad=(bottom+top)/2;
+    const availPct=100-2*pad;
+    const perCell=availPct/row.cells.length;
+    // Narrower slices (mainly toward the apex) get a smaller font so the
+    // label fits within its own true width instead of spilling past the edge.
+    const fs=perCell<14?'font-size:clamp(8.5px,1.6vw,10.5px)':perCell<22?'font-size:clamp(9.5px,1.8vw,11.5px)':'';
+    const cells=row.cells.map(c=>'<div class="pyr-cell" data-k="'+c.k+'"'+(fs?' style="'+fs+'"':'')+'>'+c.label+'</div>').join('');
     return '<div class="pyr-row">'+
       '<div class="pyr-bg" style="clip-path:polygon('+top+'% 0,'+(100-top)+'% 0,'+(100-bottom)+'% 100%,'+bottom+'% 100%);background:'+row.color+'"></div>'+
       '<div class="pyr-fg" style="padding-left:'+pad+'%;padding-right:'+pad+'%">'+cells+'</div>'+
