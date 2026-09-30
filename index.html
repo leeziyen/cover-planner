@@ -170,7 +170,6 @@ summary:hover{color:var(--ink)}
 </div>
 </div>
 <div class="tab-panel" data-panel="coverage" hidden>
-<label for="goal">Main goal</label><select id="goal"><option value="term">Protect family income</option><option value="lm">Lifelong protection for yourself or your loved ones</option><option value="la">Comprehensive lifelong coverage</option></select>
 <label for="ltc">Interested in long-term care coverage?</label><select id="ltc"><option value="">Not specified</option><option value="y">Yes</option></select>
 <label for="accint">Interested in personal accident coverage?</label><select id="accint"><option value="">Not specified</option><option value="y">Yes</option></select>
 <label for="ward">Hospital preference</label><select id="ward"><option value="">Not specified</option><option value="p">Private hospital</option><option value="a">A ward at restructured hospitals</option></select>
@@ -209,9 +208,9 @@ function fmtInput(el){const d=el.value.replace(/[^\d]/g,'');el.value=d?'S$'+Numb
 function rawNum(el){return +((el.value||'').replace(/[^\d]/g,'')||0);}
 function bindCurrency(el){el.addEventListener('input',()=>fmtInput(el));}
 const P={
-term:{n:'GREAT Term',best:'Most cover for the lowest premium, while working.',f:['Death and terminal illness cover','CI and disability cover available as riders','Convertible to another plan later']},
-lm:{n:'GREAT Life Multiplier',best:'Lifelong cover for yourself, a child, or parents — pay for a fixed period.',f:['Covers death, TPD and terminal illness for life','Cover multiplier up to 10 times, with CI riders available','Parent Care Rider: no medical check for parents','Child\'s policy can transfer to them at 18']},
-la:{n:'GREAT Life Advantage 4',best:'A comprehensive, lifelong plan that grows with your client\'s life.',f:['Death, TPD and terminal illness cover, from S$100/month','Child Cover Benefit: S$20,000 for a child under 18','GISA: raise cover at 8 life events, no medical check, before age 60','CI riders pay extra — a claim doesn\'t reduce your base cover or account value','CI riders also cover: 10 extra conditions, 16 childhood conditions, 5 senior conditions, and benign tumours','From 55: can zero out base cover, keep CI, and pay less','No surrender charge after policy year 2']},
+term:{n:'GREAT Term',best:'The affordable way to lock in a large sum assured for a fixed period — e.g. to cover a mortgage or income-replacement gap.',f:['Essential protection made affordable — the lowest premium for the highest cover, for Death & Terminal Illness','Wide range of terms: 6 years up to age 85 next birthday — match the cover to when the need actually ends','Conversion privilege: switch to a whole life or investment-linked plan later with no medical check, before age 70 next birthday — locks in insurability now','Customisable with riders — TPD Benefit, Living Care Rider or Complete Living Care Rider add CI cover (early, intermediate and/or critical stage) up to S$3,000,000']},
+lm:{n:'GREAT Life Multiplier',best:'Lifelong, participating cover with a temporary multiplier during the years protection needs peak most — premiums stop after a fixed period, cover doesn\'t.',f:['Multiplied coverage — 3x, 5x, 8x or 10x sum assured — up to age 65, 75 or 85 next birthday, reverting to the base sum assured plus bonuses after','Real cash value and policy value flexibility: reduced paid-up, extended term assurance, and a policy loan of up to 92% of cash value','Beneficiary Access — a nominated person can access up to 50% of surrender value if the client becomes mentally incapacitated, before any death claim','CI riders (CIMR / CIMR E&I) apply the same multiplier to critical illness payouts, plus Parent Care Rider cover with no medical check for parents']},
+la:{n:'GREAT Life Advantage 4',best:'An investment-linked whole life plan built to grow and adjust with your client\'s life stages, not just pay out at the end.',f:['Invested from day one in professionally managed funds — free switching, no bid-offer spread, with optional automatic fund rebalancing','GISA: raise the sum assured with no medical check at 8 real life milestones (marriage, new child, starting work and more), before age 60','Non-Lapse Guarantee for the first 10 policy years, plus a free Child Cover Benefit — S$20,000 for any child, including future/unborn children','CI riders (GREAT CI Advantage / Advantage Plus) pay extra without reducing the base sum assured — from 55, can zero out base cover and keep CI running off cash value']},
 wa:{n:'GREAT Wealth Advantage 4',best:'Grow wealth or plan for retirement, with spare cash flow to invest.',f:['100% of premiums invested from day one','Welcome, loyalty and premium bonuses as extra units','Death, disability and terminal illness cover included','Fund value moves with the market — not guaranteed']}
 };
 const G={
@@ -226,8 +225,8 @@ G.cs={n:'GREAT CareShield',best:'For clients with CareShield Life or ElderShield
 G.active.ref='Published rates: from S$27.98/mo (Basic), S$45.46 (Classic), S$74.32 (Elite).';
 G.hp.ref='Figures are GE\'s official "GREAT SupremeHealth and GREAT TotalCare 2" Benefit Schedule and Premium Rates, for cover starting from 1 April 2026 (Singapore citizen/PR, standard lives, inclusive of GST). The GSH P Plus premium is payable via MediSave up to the prevailing withdrawal limits; the GREAT TotalCare 2 (P) rider is cash-only — GREAT TotalCare 2 is not a MediSave-approved Integrated Shield plan. Excludes hospital cash and the GREAT TotalCare Plus 2 Essential rider, per your request. Premium rates shown apply for new business up to age 75 next birthday; rates from age 76 apply to renewals only and are higher — check the full table for older clients.';
 G.ha.ref='Figures are GE\'s official "GREAT SupremeHealth and GREAT TotalCare 2" Benefit Schedule and Premium Rates, for cover starting from 1 April 2026 (Singapore citizen/PR, standard lives, inclusive of GST). The GSH A Plus premium is payable via MediSave up to the prevailing withdrawal limits; the GREAT TotalCare 2 (A) rider is cash-only. Excludes hospital cash and the GREAT TotalCare Plus 2 Essential rider, per your request. Premium rates shown apply for new business up to age 75 next birthday; rates from age 76 apply to renewals only and are higher.';
-P.la.ref='Also: Non-Lapse Guarantee keeps the policy in force for the first 10 years even if account value hits zero, as long as premiums are paid. GLA4 is protection-focused, not built for accumulation like GWA4 — the minimum premium is only sized to keep the account value positive to about 75, at a conservative 4% p.a. Higher funding, or the 8% capital-growth rate GWA4 illustrates, changes that outlook — see the retirement snapshot below. Insurance charges (age, gender, smoking-dependent) are not published and are not modelled. Benefits above are from GE\'s internal GLA4 Product Information Pack (accurate 11 Dec 2024).';
-P.lm.ref='Example (OCBC): age 30, S$100,000 base, 10x multiplier, 30-yr premium term — S$4,682/yr.';
+P.la.ref='GLA4 is a regular-premium, full-pay (whole-of-life) investment-linked plan — there is no single-pay or limited-pay option. GISA increases are capped at the lower of S$100,000 or 50% of the original sum assured per exercise, up to 2 exercises, S$200,000 aggregate across GE ILPs/riders. Child Cover Benefit pays S$20,000 for death, TPD or terminal illness of a child aged 18 or under, after a 12-month waiting period. GLA4 is protection-focused, not built for accumulation like GWA4 — the minimum premium is only sized to keep the account value positive to about 75, at a conservative 4% p.a. Insurance charges (age, gender, smoking-dependent) are not published and are not modelled. Benefits above are from GE\'s internal GLA4 Product Information Pack (accurate 11 Dec 2024).';
+P.lm.ref='GLM is a participating, limited-pay whole life plan — premium payment terms of 15, 20, 25 or 30 years, whole-of-life policy term. Before the Multiplier Expiry Age (65/75/85 next birthday, selected at entry), the death/TPD/CI benefit pays the higher of the multiplied sum assured or the base sum assured plus accumulated bonuses; after that age, cover reverts to the base sum assured plus bonuses. CI cover is delivered via two optional riders (CIMR, CIMR E&I), not built into the base plan, and a CI claim reduces the base sum assured by the amount paid. Example illustration (OCBC): age 30, S$100,000 base, 10x multiplier, 30-yr premium term — about S$4,682/yr. Benefits above are from GE\'s internal GLM Product Information Pack (accurate 28 Jul 2025).';
 function termRate1000(age){return 0.9*Math.pow(1.07,age-25);}
 const GSH_P_PLUS=[[3,544.44],[20,512.83],[25,686.31],[30,751.71],[35,1134.11],[40,1183.16],[45,1930.83],[50,1994.05],[55,3009.97],[60,3601.84],[63,5093.15],[65,5120.40],[68,6881.73],[70,7329.72],[73,8397.73],[75,10189.38],[999,10189.38]];
 const GSH_A_PLUS=[[3,287.20],[20,285.02],[25,398.55],[30,398.55],[35,637.07],[40,655.60],[45,895.33],[50,917.13],[55,1287.77],[60,1439.28],[63,1825.33],[65,2013.90],[68,2485.76],[70,2790.96],[73,3303.07],[75,3913.16],[999,3913.16]];
@@ -254,18 +253,6 @@ function gauge(k,age){
   return null;
 }
 const gaugeNote='Rough gauge only, not a quote — run the actual case in your quotation system.';
-function renderLaSnapshot(annual,age){
-  if(annual<=0)return '<p class="empty" style="margin:6px 0 0">Enter an annual premium above to see a retirement snapshot.</p>';
-  const years=Math.max(5,70-(age||40));
-  const proj=rate=>{let av=0;for(let y=1;y<=years;y++){av=av*(1+rate)-60+annual;if(av<0)av=0;}return av;};
-  const v4=proj(0.04),v8=proj(0.08);
-  return '<div style="margin-top:8px"><b>Retirement snapshot</b>, account value at age 70 (in '+years+' years)<br>'+
-    '<div style="margin:6px 0">At 4% p.a. (GE\'s conservative sustainability rate): about '+fmt(v4)+'</div>'+
-    '<div>At 8% p.a. (GWA4\'s illustrated capital-growth rate): about '+fmt(v8)+'</div>'+
-    '<div class="ref" style="margin-top:6px">Both scenarios only model fund growth less the S$5/month policy fee. Insurance charges (mortality cost, based on age, gender and smoking status) are not published and are not included — they would reduce these figures, more so as the client ages. Not a benefit illustration.</div></div>';
-}
-const catOf=k=>({term:'Life & wealth',lm:'Life & wealth',la:'Life & wealth',wa:'Life & wealth',cc:'CI',hp:'Hospital',ha:'Hospital',active:'Accident',golden:'Accident',junior:'Accident',cs:'Long-term care'})[k]||'Other';
-const colors={'Life & wealth':'#1F6F78','CI':'#B7791F','Hospital':'#5B8FB9','Accident':'#8A98A3','Long-term care':'#7D5BA6'};
 const WB_TABLE={5:[[1200,0],[2400,0],[3600,0],[6000,0.15],[12000,0.30]],10:[[1200,0],[2400,0.05],[3600,0.10],[6000,0.20],[12000,0.40]],15:[[1200,0.075],[2400,0.15],[3600,0.25],[6000,0.30],[12000,0.55]]};
 function policyFeeRate(choice,y){
   if(choice==15)return y<=15?0.015:0.007;
@@ -336,13 +323,11 @@ function renderWaTimeline(lump,annual,age,choice,convertYear,stopAtTerm){
 const card=(k,p,lab,held,cls,strong,age)=>{
   const g=gauge(k,age);
   const wa=k==='wa'?'<div class="wa-tl" data-age="'+age+'">'+renderWaTimeline(0,0,age,'10')+'</div>':'';
-  const la=k==='la'?'<div class="la-tl" data-age="'+age+'">'+renderLaSnapshot(0,age)+'</div>':'';
-  const premLabel=k==='wa'?'Annual premium (for the timeline)':'Annual premium';
   const details=[];
   if(p.ref)details.push(p.ref);
   if(g)details.push('<b>Rough gauge:</b> '+g+' '+gaugeNote);
   const detailsBlock=details.length?'<details style="margin-top:8px"><summary style="font-size:.85rem;color:var(--muted)">More detail</summary>'+details.map(d=>'<div class="ref" style="margin-top:6px">'+d+'</div>').join('')+'</details>':'';
-  return '<div class="item '+cls+(held?' held':'')+'" data-k="'+k+'"><h3>'+p.n+' <span class="tag'+(strong?' best':'')+'">'+lab+(held?', already held, check it is enough':'')+'</span></h3><div>'+p.best+'</div><ul>'+p.f.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+detailsBlock+'<label class="q">'+premLabel+' <input type="text" inputmode="numeric" class="qt" placeholder="e.g. 6,000"></label><div class="ref qtm">Enter an annual premium to see the monthly equivalent.</div>'+wa+la+'</div>';
+  return '<div class="item '+cls+(held?' held':'')+'" data-k="'+k+'"><h3>'+p.n+' <span class="tag'+(strong?' best':'')+'">'+lab+(held?', already held, check it is enough':'')+'</span></h3><div>'+p.best+'</div><ul>'+p.f.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+detailsBlock+wa+'</div>';
 };
 function build(){
   const age=+$('age').value,dep=+$('dep').value,inc=rawNum($('inc')),sav=rawNum($('sav')),exp=rawNum($('exp')),lump=rawNum($('lump')),occ=+$('occ').value;
@@ -368,20 +353,6 @@ function build(){
   const cover={death:gapDeath,ci:gapCI,totalDeath,totalCI,existDeath,existCI};
   return{notes,cover};
 }
-function svgPie(cats){
-  const labels=Object.keys(cats),vals=Object.values(cats),total=vals.reduce((a,b)=>a+b,0);
-  if(!total)return '<p class="empty" style="margin:0">Enter annual premiums below to see the split.</p>';
-  let a0=-90,parts='';const cx=100,cy=100,r=80;
-  labels.forEach((l,i)=>{
-    const frac=vals[i]/total,a1=a0+frac*360;
-    const toXY=a=>[cx+r*Math.cos(a*Math.PI/180),cy+r*Math.sin(a*Math.PI/180)];
-    const [x0,y0]=toXY(a0),[x1,y1]=toXY(a1),large=(a1-a0)>180?1:0;
-    parts+='<path d="M'+cx+','+cy+' L'+x0.toFixed(1)+','+y0.toFixed(1)+' A'+r+','+r+' 0 '+large+' 1 '+x1.toFixed(1)+','+y1.toFixed(1)+' Z" fill="'+(colors[l]||'#999')+'"><title>'+l+': '+fmt(vals[i])+' a year</title></path>';
-    a0=a1;
-  });
-  const legend=labels.map(l=>'<span style="display:inline-flex;align-items:center;gap:4px;margin:2px 8px 2px 0"><span style="width:10px;height:10px;background:'+(colors[l]||'#999')+';border-radius:2px;display:inline-block"></span>'+l+'</span>').join('');
-  return '<svg viewBox="0 0 200 200" style="width:180px;height:180px;display:block;margin:0 auto">'+parts+'</svg><div style="text-align:center;font-size:.82rem;margin-top:8px">'+legend+'</div>';
-}
 function svgBar(labels,vals,cols){
   const max=Math.max(...vals,1);
   return labels.map((l,i)=>'<div style="margin:8px 0"><div style="font-size:.85rem;margin-bottom:3px">'+l+': '+fmt(vals[i])+'</div><div style="background:var(--line);border-radius:4px;height:14px;width:100%"><div style="background:'+cols[i]+';height:14px;border-radius:4px;width:'+(vals[i]/max*100)+'%"></div></div></div>').join('');
@@ -399,22 +370,10 @@ function svgStackedBar(labels,existingArr,gapArr,totalArr){
   }).join('')+'<div style="font-size:.78rem;color:var(--muted);margin-top:4px"><span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px"><span style="width:10px;height:10px;background:var(--opt);border-radius:2px;display:inline-block"></span>Existing cover</span><span style="display:inline-flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:var(--core);border-radius:2px;display:inline-block"></span>Recommended new cover</span></div>';
 }
 function updChartsForSuite(suiteEl){
-  const cats={};
-  suiteEl.querySelectorAll('.item[data-k]').forEach(it=>{
-    const a=rawNum(it.querySelector('.qt'));
-    it.querySelector('.qtm').textContent=a>0?'≈ '+fmt(a/12)+' a month':'Enter an annual premium to see the monthly equivalent.';
-    if(a<=0)return;
-    const cat=catOf(it.dataset.k);cats[cat]=(cats[cat]||0)+a;
-  });
-  const vals=Object.values(cats);
-  const premChartEl=suiteEl.querySelector('.premChart');
-  if(premChartEl)premChartEl.innerHTML=svgPie(cats);
   const waEl=suiteEl.querySelector('.item[data-k="wa"]');
   if(waEl){
     const tlDiv=waEl.querySelector('.wa-tl');
-    const ownAnnual=rawNum(waEl.querySelector('.qt'));
-    const invBud=rawNum($('invBud'));
-    const annual=ownAnnual>0?ownAnnual:invBud*12;
+    const annual=rawNum($('invBud'))*12;
     const lump=rawNum($('lump')),age=+tlDiv.dataset.age||40;
     const curSel=tlDiv.querySelector('.wa-choice'),choice=curSel?curSel.value:'10';
     const curStop=tlDiv.querySelector('.wa-stopatterm'),stopAtTerm=curStop?curStop.checked:false;
@@ -427,35 +386,21 @@ function updChartsForSuite(suiteEl){
     const newConv=tlDiv.querySelector('.wa-convert');
     if(newConv)newConv.addEventListener('input',()=>updChartsForSuite(suiteEl));
   }
-  const laEl=suiteEl.querySelector('.item[data-k="la"]');
-  if(laEl){
-    const laDiv=laEl.querySelector('.la-tl');
-    const laAnnual=rawNum(laEl.querySelector('.qt')),laAge=+laDiv.dataset.age||40;
-    laDiv.innerHTML=renderLaSnapshot(laAnnual,laAge);
-  }
-  const bud=rawNum($('bud')),inc=rawNum($('inc')),lump=rawNum($('lump')),invBud=rawNum($('invBud'));
-  const annualTotal=vals.reduce((a,b)=>a+b,0),monthlyTotal=annualTotal/12;
-  let m='<b>Budget check</b><br>';
-  m+=bud>0?'Client budget: '+fmt(bud)+' a month':'A common guide is 10% to 15% of income, about '+fmt(inc/12*0.10)+' to '+fmt(inc/12*0.15)+' a month';
-  m+='<br>Annual premiums entered so far: <b>'+fmt(annualTotal)+' a year</b> (≈ '+fmt(monthlyTotal)+' a month)';
-  if(bud>0&&monthlyTotal>bud)m+='<br><span class="over">Over budget by '+fmt(monthlyTotal-bud)+' a month</span>';
-  else if(bud>0&&monthlyTotal>0)m+='<br>Within budget, '+fmt(bud-monthlyTotal)+' a month to spare';
-  if(lump>0)m+='<br>Lump sum budget: '+fmt(lump);
-  if(invBud>0)m+='<br>Monthly investment-only budget: '+fmt(invBud);
-  const totTextEl=suiteEl.querySelector('.totText');
-  if(totTextEl)totTextEl.innerHTML=m;
-  suiteEl.dataset.annual=annualTotal;
 }
-function updAllSuites(){document.querySelectorAll('.suite').forEach(updChartsForSuite);updCompareTable();}
+function updAllSuites(){document.querySelectorAll('.suite').forEach(updChartsForSuite);}
 function updCompareTable(){
   const wrap=$('compareTable');
   if(!wrap)return;
   const suites=[...document.querySelectorAll('.suite')];
   if(!suites.length)return;
   const planName=k=>({term:P.term.n,lm:P.lm.n,la:P.la.n}[k]||k);
-  let t='<table class="compare-table"><tr><th>Option</th>'+suites.map(s=>'<th>'+s.dataset.label+(s.dataset.matches==='1'?' <span class="tag best">Matches goal</span>':'')+'</th>').join('')+'</tr>';
+  const premStruct={term:'Level term — 6 yrs to age 85 next birthday, no cash value',lm:'Participating, limited-pay whole life (15/20/25/30-yr premiums)',la:'Whole-of-life, regular-pay investment-linked plan (ILP)'};
+  const cashVal={term:'None — pure protection',lm:'Guaranteed cash value; loan up to 92% of it',la:'Fund-linked account value — moves with markets, not guaranteed'};
+  let t='<table class="compare-table"><tr><th>Option</th>'+suites.map(s=>'<th>'+s.dataset.label+'</th>').join('')+'</tr>';
   t+='<tr><td class="compare-metric">Core plan</td>'+suites.map(s=>'<td>'+planName(s.dataset.lifek)+'</td>').join('')+'</tr>';
-  t+='<tr><td class="compare-metric">Premiums entered so far</td>'+suites.map(s=>{const a=+s.dataset.annual||0;return '<td>'+(a>0?fmt(a)+'/yr (≈'+fmt(a/12)+'/mo)':'<span class="empty">Not entered yet</span>')+'</td>';}).join('')+'</tr>';
+  t+='<tr><td class="compare-metric">Premium structure</td>'+suites.map(s=>'<td>'+(premStruct[s.dataset.lifek]||'')+'</td>').join('')+'</tr>';
+  t+='<tr><td class="compare-metric">Cash value / investment</td>'+suites.map(s=>'<td>'+(cashVal[s.dataset.lifek]||'')+'</td>').join('')+'</tr>';
+  t+='<tr><td class="compare-metric">Best for</td>'+suites.map(s=>'<td>'+(P[s.dataset.lifek]?P[s.dataset.lifek].best:'')+'</td>').join('')+'</tr>';
   t+='</table>';
   wrap.innerHTML=t;
 }
@@ -468,20 +413,19 @@ function buildEmailHref(clientName,agentName,cover){
   lines.push('Critical illness — total need '+fmt(cover.totalCI)+', existing cover '+fmt(cover.existCI)+', recommended new cover '+fmt(cover.ci));
   lines.push('');
   document.querySelectorAll('.suite').forEach(s=>{
-    const a=+s.dataset.annual||0;
-    lines.push('Option '+s.dataset.suite+' ('+s.dataset.label+'): core plan — '+({term:P.term.n,lm:P.lm.n,la:P.la.n}[s.dataset.lifek]||'')+(a>0?', '+fmt(a)+'/yr entered so far':', premiums not yet entered'));
+    lines.push('Option '+s.dataset.suite+' ('+s.dataset.label+'): core plan — '+({term:P.term.n,lm:P.lm.n,la:P.la.n}[s.dataset.lifek]||''));
   });
   lines.push('');
-  lines.push('This is a starting point for the conversation, not a quotation — figures are confirmed in the quotation system.');
+  lines.push('This is a starting point for the conversation, not a quotation — premiums are confirmed in the quotation system.');
   const subject='Cover plan summary'+(clientName?' — '+clientName:'');
   return 'mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(lines.join('\n'));
 }
 window.addEventListener('beforeprint',()=>{document.querySelectorAll('#res details').forEach(d=>{d.dataset.wasOpen=d.open?'1':'0';d.open=true;});});
 window.addEventListener('afterprint',()=>{document.querySelectorAll('#res details').forEach(d=>{d.open=d.dataset.wasOpen==='1';});});
 function suiteBlock(n,lifeK,label,blurb,ctx){
-  const{age,dep,have,wealthWanted,ward,accWanted,ltcWanted,goal}=ctx;
-  let h='<div class="suite" data-suite="'+n+'" data-lifek="'+lifeK+'" data-label="'+label+'" data-matches="'+(lifeK===goal?'1':'0')+'">';
-  h+='<h2>Option '+n+': '+label+(lifeK===goal?' <span class="tag best" style="margin-left:8px">Matches stated goal</span>':'')+'</h2>';
+  const{age,dep,have,wealthWanted,ward,accWanted,ltcWanted}=ctx;
+  let h='<div class="suite" data-suite="'+n+'" data-lifek="'+lifeK+'" data-label="'+label+'">';
+  h+='<h2>Option '+n+': '+label+'</h2>';
   h+='<p class="sub" style="margin:0 0 14px">'+blurb+'</p>';
   h+=card(lifeK,P[lifeK],'Core life cover',have.has(lifeK),'p3',true,age);
   h+=card('cc',G.cc,'Critical illness add-on',have.has('ci'),'p2',false,age);
@@ -493,7 +437,6 @@ function suiteBlock(n,lifeK,label,blurb,ctx){
     if(dep>0)h+=card('junior',G.junior,'Accident add-on, for the children',false,'p1',false,age);
   }
   if(ltcWanted)h+=card('cs',G.cs,'Long-term care add-on',have.has('cs'),'p2',false,age);
-  h+='<div class="cover"><div class="totText"></div><div class="chartwrap premChart"></div></div>';
   h+='</div>';
   return h;
 }
@@ -502,8 +445,8 @@ $('f').addEventListener('submit',e=>{
   const {notes,cover}=build();
   const age=+$('age').value,dep=+$('dep').value;
   const have=new Set([...document.querySelectorAll('[name=have]:checked')].map(e=>e.value));
-  const ward=$('ward').value,wealthWanted=$('wealth').value==='y',ltcWanted=$('ltc').value==='y',accWanted=$('accint').value==='y',goal=$('goal').value;
-  const ctx={age,dep,have,wealthWanted,ward,accWanted,ltcWanted,goal};
+  const ward=$('ward').value,wealthWanted=$('wealth').value==='y',ltcWanted=$('ltc').value==='y',accWanted=$('accint').value==='y';
+  const ctx={age,dep,have,wealthWanted,ward,accWanted,ltcWanted};
   lastRec={ward,accWanted,ltcWanted,have,wealthWanted};
   const clientName=($('clientName').value||'').trim(),agentName=($('agentName').value||'').trim();
   const today=new Date().toLocaleDateString('en-SG',{day:'numeric',month:'long',year:'numeric'});
@@ -514,16 +457,16 @@ $('f').addEventListener('submit',e=>{
   h+='<div class="cover"><b>Coverage summary</b>: recommended vs existing<div class="ref" style="margin:2px 0 4px">Total need is 10× annual income (death/disability) or 5× annual income (critical illness), offset by existing cover only. Current savings and investments are noted above where relevant, but do not reduce the recommended amount.</div><div class="chartwrap" id="covChart"></div></div>';
   h+='<div class="cover"><b>Suite comparison, at a glance</b><div id="compareTable" style="margin-top:8px;overflow-x:auto"></div></div>';
   h+='<p class="sub" style="margin:4px 0 18px">Three complete suites below — only the core life plan changes between them; the add-ons stay the same so they can be compared side by side.</p>';
-  h+=suiteBlock(1,'term','Term-based suite','Lowest premium, most cover while working — a good fit if budget is tight or cover is mainly needed during income-earning years.',ctx);
-  h+=suiteBlock(2,'lm','Life Multiplier-based suite','Lifelong cover with a limited pay period — a middle ground between cost today and cover for life.',ctx);
-  h+=suiteBlock(3,'la','Life Advantage 4-based suite','The most comprehensive, lifelong plan, with GISA cover increases and retirement-stage flexibility.',ctx);
+  h+=suiteBlock(1,'term','Term-based suite','The affordable, temporary option — locks in a large sum assured for a set period, e.g. to cover a mortgage, loans or the years until the kids are financially independent.',ctx);
+  h+=suiteBlock(2,'lm','Life Multiplier-based suite','A lifelong base plan with a temporary multiplier during peak protection years, and premiums that stop after a fixed period while cover continues for life.',ctx);
+  h+=suiteBlock(3,'la','Life Advantage 4-based suite','The most flexible lifelong plan — invests from day one, raises cover automatically at life milestones, and adjusts as circumstances change.',ctx);
   $('res').className='';$('res').innerHTML=h;
   bindPyramid($('res'),true);
   $('covChart').innerHTML=svgStackedBar(['Death & disability','Critical illness'],[cover.existDeath,cover.existCI],[cover.death,cover.ci],[cover.totalDeath,cover.totalCI]);
+  updCompareTable();
   $('printBtn').addEventListener('click',()=>window.print());
   $('emailBtn').addEventListener('click',ev=>{ev.preventDefault();window.location.href=buildEmailHref(clientName,agentName,cover);});
   updAllSuites();
-  document.querySelectorAll('.qt').forEach(e=>{bindCurrency(e);e.addEventListener('input',updAllSuites);});
   ['lump','invBud'].forEach(id=>{const el=$(id);if(!el.dataset.bound){bindCurrency(el);el.addEventListener('input',updAllSuites);el.dataset.bound='1';}});
   $('res').scrollIntoView({behavior:'smooth',block:'start'});
 });
@@ -566,7 +509,7 @@ $('quickMode').addEventListener('change',()=>{
 });
 // --- Saved client cases (stored locally in this browser only) ---
 const CLIENT_STORE_KEY='coverPlannerClients';
-const SAVED_FIELD_IDS=['clientName','age','dep','inc','sav','exp','occ','existDeath','existCI','goal','ltc','accint','ward','bud','lump','wealth','invBud','cpfOA','cpfSA','cpfMA','cpfSalary','cpfHouse','cpfInst'];
+const SAVED_FIELD_IDS=['clientName','age','dep','inc','sav','exp','occ','existDeath','existCI','ltc','accint','ward','bud','lump','wealth','invBud','cpfOA','cpfSA','cpfMA','cpfSalary','cpfHouse','cpfInst'];
 function loadClientsStore(){try{return JSON.parse(localStorage.getItem(CLIENT_STORE_KEY)||'{}');}catch(e){return{};}}
 function saveClientsStore(obj){try{localStorage.setItem(CLIENT_STORE_KEY,JSON.stringify(obj));}catch(e){}}
 function refreshSavedClientSel(selectName){
