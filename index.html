@@ -172,6 +172,7 @@ summary:hover{color:var(--ink)}
 <div class="tab-panel" data-panel="coverage" hidden>
 <label for="ltc">Interested in long-term care coverage?</label><select id="ltc"><option value="">Not specified</option><option value="y">Yes</option></select>
 <label for="accint">Interested in personal accident coverage?</label><select id="accint"><option value="">Not specified</option><option value="y">Yes</option></select>
+<label for="ciint">Interested in a standalone critical illness plan with relapse cover?</label><select id="ciint"><option value="">Not specified</option><option value="y">Yes</option></select>
 <label for="ward">Hospital preference</label><select id="ward"><option value="">Not specified</option><option value="p">Private hospital</option><option value="a">A ward at restructured hospitals</option></select>
 <label for="bud">Monthly insurance budget (optional)</label><input id="bud" type="text" inputmode="numeric" placeholder="e.g. 400">
 <label for="lump">Lump sum insurance budget (optional)</label><input id="lump" type="text" inputmode="numeric" placeholder="For single-premium or top-up amounts">
@@ -210,7 +211,7 @@ function bindCurrency(el){el.addEventListener('input',()=>fmtInput(el));}
 const P={
 term:{n:'GREAT Term',best:'The affordable way to lock in a large sum assured for a fixed period.',f:['Lowest premium for the highest amount of cover','Choose a term from 6 years up to age 85','Can switch to a lifelong plan later, no health check needed','Add critical illness cover if you want it']},
 lm:{n:'GREAT Life Multiplier',best:'Lifelong cover with extra protection in the years it matters most, plus a cash value you can draw on later.',f:['Up to 10x your cover during your peak protection years','Builds real cash value you can borrow against','Once you no longer need the cover, cash it out as a lump sum','Add critical illness cover, plus free cover for a parent']},
-la:{n:'GREAT Life Advantage 4',best:'A flexible, lifelong plan that grows with you and can be turned into retirement cash later.',f:['Invested from day one, in funds you choose','Cover increases automatically at life milestones — no health check','Flexible from 55 — dial cover up, down, or cash out','Add critical illness cover without reducing your sum assured']},
+la:{n:'GREAT Life Advantage 4',best:'A flexible, lifelong plan that grows with you and can be turned into retirement cash later.',f:['Invested from day one, in funds you choose','Cover increases automatically at life milestones — no health check','Flexible from 55 — dial cover up, down, or cash out','Optional CI rider: full payout on top of your plan — doesn\'t reduce your sum assured or account value','Covers 52 conditions at every stage, plus extra payouts for early procedures like angioplasty or a mastectomy','Add-on options for a child, for seniors, and to waive premiums after a claim']},
 wa:{n:'GREAT Wealth Advantage 4',best:'Grow wealth or plan for retirement, with spare cash flow to invest.',f:['100% of premiums invested from day one','Bonuses added over time to boost your fund','Includes death, disability and terminal illness cover','Fund value moves with the market — not guaranteed']}
 };
 const G={
@@ -240,7 +241,7 @@ TIER_COMPARE.active.note='<b>Doesn\'t need a hospital stay</b> — a sprained an
 TIER_COMPARE.active.b.ref='For your own reference: covered outpatient scenarios include physio or allied-health after an injury (up to S$1,000/accident), any clinic visit for accidental injury, and a S$500 "Sickness" benefit for food poisoning, bites, or a child\'s Hand-Foot-Mouth Disease. These sub-limits are flat across Basic, Classic and Elite.';
 G.hp.ref='Figures are GE\'s official "GREAT SupremeHealth and GREAT TotalCare 2" Benefit Schedule and Premium Rates, for cover starting from 1 April 2026 (Singapore citizen/PR, standard lives, inclusive of GST). The GSH P Plus premium is payable via MediSave up to the prevailing withdrawal limits; the GREAT TotalCare 2 (P) rider is cash-only — GREAT TotalCare 2 is not a MediSave-approved Integrated Shield plan. Excludes hospital cash and the GREAT TotalCare Plus 2 Essential rider, per your request. Premium rates shown apply for new business up to age 75 next birthday; rates from age 76 apply to renewals only and are higher — check the full table for older clients.';
 G.ha.ref='Figures are GE\'s official "GREAT SupremeHealth and GREAT TotalCare 2" Benefit Schedule and Premium Rates, for cover starting from 1 April 2026 (Singapore citizen/PR, standard lives, inclusive of GST). The GSH A Plus premium is payable via MediSave up to the prevailing withdrawal limits; the GREAT TotalCare 2 (A) rider is cash-only. Excludes hospital cash and the GREAT TotalCare Plus 2 Essential rider, per your request. Premium rates shown apply for new business up to age 75 next birthday; rates from age 76 apply to renewals only and are higher.';
-P.la.ref='GLA4 is a regular-premium, full-pay (whole-of-life) investment-linked plan — there is no single-pay or limited-pay option. GISA increases are capped at the lower of S$100,000 or 50% of the original sum assured per exercise, up to 2 exercises, S$200,000 aggregate across GE ILPs/riders. Child Cover Benefit pays S$20,000 for death, TPD or terminal illness of a child aged 18 or under, after a 12-month waiting period. GLA4 is protection-focused, not built for accumulation like GWA4 — the minimum premium is only sized to keep the account value positive to about 75, at a conservative 4% p.a.; funding above the minimum is what leaves a meaningful account value to draw on later. A full surrender pays out the account value at the time, which moves with the funds chosen and is never guaranteed — model the actual figure in your quotation system, not this tool, before presenting it as a retirement sum. Insurance charges (age, gender, smoking-dependent) are not published and are not modelled. Benefits above are from GE\'s internal GLA4 Product Information Pack (accurate 11 Dec 2024).';
+P.la.ref='GLA4 is a regular-premium, full-pay (whole-of-life) investment-linked plan — there is no single-pay or limited-pay option. GISA increases are capped at the lower of S$100,000 or 50% of the original sum assured per exercise, up to 2 exercises, S$200,000 aggregate across GE ILPs/riders. Child Cover Benefit pays S$20,000 for death, TPD or terminal illness of a child aged 18 or under, after a 12-month waiting period. GLA4 is protection-focused, not built for accumulation like GWA4 — the minimum premium is only sized to keep the account value positive to about 75, at a conservative 4% p.a.; funding above the minimum is what leaves a meaningful account value to draw on later. A full surrender pays out the account value at the time, which moves with the funds chosen and is never guaranteed — model the actual figure in your quotation system, not this tool, before presenting it as a retirement sum. Insurance charges (age, gender, smoking-dependent) are not published and are not modelled. Benefits above are from GE\'s internal GLA4 Product Information Pack (accurate 11 Dec 2024). <b>CI rider detail:</b> two separate riders can be attached — GREAT CI Advantage (Critical stage only) and GREAT CI Advantage Plus (Early, Intermediate and Critical stages; also adds Juvenile Benefit before age 18 and Senior Benefit from age 51) — both can be stacked. The core CI benefit is a 100% lump-sum payout that does not reduce GLA4\'s basic sum assured or account value. The Additional/Special Benefit pays 10% (angioplasty, max S$25,000) or 25% (9 other listed procedures, max S$25,000 each) for early intervention before a full CI diagnosis, up to 6 claims, outside the main CI cap. Benign Tumour Benefit pays 5% (max S$5,000/organ, up to 2 organs). GISA-CI (no medical check, 8 milestones, capped at the lower of S$100,000 or 50% of original benefit, max 2 exercises) is available on the Advantage rider only, not Advantage Plus. There is no multi-claim/relapse benefit on either CI rider (unlike the standalone GREAT Critical Cover\'s Protect Me Again) — premium waiver on a claim is a separate rider (GREAT Premium Waiver Advantage / Payer Advantage) that must be added on top. Caps: Early/Intermediate combined S$350,000 across all policies on the life assured; overall CI (all stages) S$3,000,000. Entry ages, exact condition lists and exclusions are in GE\'s internal GLA4 and CI UDR Product Information Pack — confirm before presenting to a client.';
 P.lm.ref='GLM is a participating, limited-pay whole life plan — premium payment terms of 15, 20, 25 or 30 years, whole-of-life policy term. Before the Multiplier Expiry Age (65/75/85 next birthday, selected at entry), the death/TPD/CI benefit pays the higher of the multiplied sum assured or the base sum assured plus accumulated bonuses; after that age, cover reverts to the base sum assured plus bonuses. CI cover is delivered via two optional riders (CIMR, CIMR E&I), not built into the base plan, and a CI claim reduces the base sum assured by the amount paid. Example illustration (OCBC): age 30, S$100,000 base, 10x multiplier, 30-yr premium term — about S$4,682/yr. A full surrender pays the cash surrender value at the time — the guaranteed cash value plus any accumulated (non-guaranteed) bonuses — which grows with policy duration and premiums paid; confirm the actual figure in your quotation system before presenting it as a retirement sum. Benefits above are from GE\'s internal GLM Product Information Pack (accurate 28 Jul 2025).';
 function termRate1000(age){return 0.9*Math.pow(1.07,age-25);}
 const GSH_P_PLUS=[[3,544.44],[20,512.83],[25,686.31],[30,751.71],[35,1134.11],[40,1183.16],[45,1930.83],[50,1994.05],[55,3009.97],[60,3601.84],[63,5093.15],[65,5120.40],[68,6881.73],[70,7329.72],[73,8397.73],[75,10189.38],[999,10189.38]];
@@ -445,12 +446,12 @@ function buildEmailHref(clientName,agentName,cover){
 window.addEventListener('beforeprint',()=>{document.querySelectorAll('#res details').forEach(d=>{d.dataset.wasOpen=d.open?'1':'0';d.open=true;});});
 window.addEventListener('afterprint',()=>{document.querySelectorAll('#res details').forEach(d=>{d.open=d.dataset.wasOpen==='1';});});
 function suiteBlock(n,lifeK,label,blurb,ctx){
-  const{age,dep,have,wealthWanted,ward,accWanted,ltcWanted}=ctx;
+  const{age,dep,have,wealthWanted,ward,accWanted,ltcWanted,ciWanted}=ctx;
   let h='<div class="suite" data-suite="'+n+'" data-lifek="'+lifeK+'" data-label="'+label+'">';
   h+='<h2>Option '+n+': '+label+'</h2>';
   h+='<p class="sub" style="margin:0 0 14px">'+blurb+'</p>';
   h+=card(lifeK,P[lifeK],'Core life cover',have.has(lifeK),'p3',true,age);
-  h+=card('cc',G.cc,'Critical illness add-on',have.has('ci'),'p2',false,age);
+  if(ciWanted)h+=card('cc',G.cc,'Critical illness add-on',have.has('ci'),'p2',false,age);
   if(wealthWanted)h+=card('wa',P.wa,'Wealth accumulation add-on',have.has('wa'),'p2',false,age);
   if(ward==='p'||ward==='a')h+=card(ward==='p'?'hp':'ha',ward==='p'?G.hp:G.ha,'Hospital add-on',have.has('hosp'),'p2',false,age);
   if(accWanted){
@@ -467,9 +468,9 @@ $('f').addEventListener('submit',e=>{
   const {notes,cover}=build();
   const age=+$('age').value,dep=+$('dep').value;
   const have=new Set([...document.querySelectorAll('[name=have]:checked')].map(e=>e.value));
-  const ward=$('ward').value,wealthWanted=$('wealth').value==='y',ltcWanted=$('ltc').value==='y',accWanted=$('accint').value==='y';
-  const ctx={age,dep,have,wealthWanted,ward,accWanted,ltcWanted};
-  lastRec={ward,accWanted,ltcWanted,have,wealthWanted};
+  const ward=$('ward').value,wealthWanted=$('wealth').value==='y',ltcWanted=$('ltc').value==='y',accWanted=$('accint').value==='y',ciWanted=$('ciint').value==='y';
+  const ctx={age,dep,have,wealthWanted,ward,accWanted,ltcWanted,ciWanted};
+  lastRec={ward,accWanted,ltcWanted,ciWanted,have,wealthWanted};
   const clientName=($('clientName').value||'').trim(),agentName=($('agentName').value||'').trim();
   const today=new Date().toLocaleDateString('en-SG',{day:'numeric',month:'long',year:'numeric'});
   let h='<div class="results-head"><h3 style="font:700 1.1rem \'Literata\',Georgia,serif;margin:0">'+(clientName?'For '+clientName:'Client cover plan')+'</h3><div class="ref">'+today+(agentName?' · Prepared by '+agentName:'')+'</div></div>';
@@ -533,7 +534,7 @@ $('quickMode').addEventListener('change',()=>{
 });
 // --- Saved client cases (stored locally in this browser only) ---
 const CLIENT_STORE_KEY='coverPlannerClients';
-const SAVED_FIELD_IDS=['clientName','age','dep','inc','sav','exp','occ','existDeath','existCI','ltc','accint','ward','bud','lump','wealth','invBud','cpfOA','cpfSA','cpfMA','cpfSalary','cpfHouse','cpfInst'];
+const SAVED_FIELD_IDS=['clientName','age','dep','inc','sav','exp','occ','existDeath','existCI','ltc','accint','ciint','ward','bud','lump','wealth','invBud','cpfOA','cpfSA','cpfMA','cpfSalary','cpfHouse','cpfInst'];
 function loadClientsStore(){try{return JSON.parse(localStorage.getItem(CLIENT_STORE_KEY)||'{}');}catch(e){return{};}}
 function saveClientsStore(obj){try{localStorage.setItem(CLIENT_STORE_KEY,JSON.stringify(obj));}catch(e){}}
 function refreshSavedClientSel(selectName){
@@ -621,13 +622,12 @@ const PYRAMID=[
 let lastRec=null;
 function pyramidCellData(k){
   if(!lastRec)return null;
-  const {ward,accWanted,ltcWanted,have,wealthWanted}=lastRec;
+  const {ward,accWanted,ltcWanted,ciWanted,have,wealthWanted}=lastRec;
   if(k==='hosp')return [ward==='p'?'GREAT SupremeHealth P Plus':ward==='a'?'GREAT SupremeHealth A Plus':'Not specified by client'];
   if(k==='rider')return [ward?'GREAT TotalCare 2 ('+(ward==='p'?'P':'A')+') — covers the deductible and co-insurance, no cash deposit at admission':'Not specified by client'];
   if(k==='acc')return [accWanted?'GREAT Protector Active'+(have.has('acc')?' — already held, check it\'s enough':''):'Not specified by client'];
   if(k==='ltc')return [ltcWanted?'GREAT CareShield'+(have.has('cs')?' — already held':''):'Not specified by client'];
-  if(k==='earlyci'||k==='lateci')return ['GREAT Critical Cover'+(have.has('ci')?' — already held, check it\'s enough':'')+' — covers all stages, from early to advanced'];
-  if(k==='relapse')return ['Add Protect Me Again to GREAT Critical Cover — up to 3 claims at 100% each'];
+  if(k==='earlyci'||k==='lateci'||k==='relapse')return [ciWanted?'GREAT Critical Cover'+(have.has('ci')?' — already held, check it\'s enough':'')+' — covers all stages, with Protect Me Again for relapse (up to 3 claims at 100% each)':'Not specified by client — ask if they want a standalone CI plan with relapse cover'];
   if(k==='life')return ['See the 3 suite options below — '+P.term.n+', '+P.lm.n+' or '+P.la.n];
   if(k==='wealth')return [wealthWanted?'GREAT Wealth Advantage 4'+(have.has('wa')?' — already held, check it\'s enough':''):'Not specified by client'];
 }
