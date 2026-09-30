@@ -108,8 +108,6 @@ summary:hover{color:var(--ink)}
 </div>
 <div class="tab-panel" data-panel="client" hidden>
 <div class="row"><div><label for="age">Age</label><input id="age" type="number" min="0" max="99" required></div>
-<div><label for="gender">Gender</label><select id="gender"><option>Female</option><option>Male</option><option>Other</option></select></div></div>
-<div class="row"><div><label for="mar">Marital status</label><select id="mar"><option value="0">Single</option><option value="1">Married</option></select></div>
 <div><label for="dep">Dependents</label><input id="dep" type="number" min="0" value="0" required></div></div>
 <label for="inc">Annual income</label><input id="inc" type="text" inputmode="numeric" placeholder="e.g. 60,000" required>
 <label for="sav">Current savings and investments</label><input id="sav" type="text" inputmode="numeric" placeholder="e.g. 20,000">
@@ -545,12 +543,37 @@ const CPF_RATE=[[55,0.37],[60,0.34],[65,0.25],[70,0.165],[999,0.125]];
 function cpfAlloc(age){for(const r of CPF_ALLOC)if(age<=r[0])return{oa:r[1],sa:r[2],ma:r[3]};return CPF_ALLOC[CPF_ALLOC.length-1];}
 function cpfRate(age){for(const r of CPF_RATE)if(age<=r[0])return r[1];return CPF_RATE[CPF_RATE.length-1][1];}
 const FRS_2026=220400,FRS_GROWTH=0.035,PAYOUT_RATIO=1780/220400,DEFER_FACTOR=1.40;
+function awlForAge(age){return age<=40?300:age<=70?600:900;}
+function medisaveFundingHtml(age){
+  const ma0=rawNum($('cpfMA'));
+  if(ma0<=0)return '';
+  const maGrowth=ma0*0.04,awl=awlForAge(age),ward=$('ward').value,wantsCS=$('ltc').value==='y';
+  const pieces=[];
+  if(ward==='p'||ward==='a')pieces.push({label:(ward==='p'?'GSH P Plus':'GSH A Plus')+"'s additional private insurance premium",amt:awl});
+  if(wantsCS)pieces.push({label:'a CareShield Life supplement (e.g. GREAT CareShield)',amt:600});
+  let h='<div class="cover"><b>What MediSave\'s own growth could fund</b><br>';
+  h+='Current MediSave balance: <b>'+fmt(ma0)+'</b>, growing at 4% p.a. — about <b>'+fmt(maGrowth)+' a year</b> in interest alone, even with no further contributions.<br>';
+  if(pieces.length){
+    const totalCap=pieces.reduce((a,p)=>a+p.amt,0);
+    h+='<ul style="margin:8px 0 0;padding-left:18px">'+pieces.map(p=>'<li>Up to '+fmt(p.amt)+'/yr toward '+p.label+'</li>').join('')+'</ul>';
+    h+='<div style="margin-top:8px">Combined MediSave-payable cap: <b>'+fmt(totalCap)+' a year</b>. ';
+    h+= maGrowth>=totalCap
+      ? 'At 4% p.a., the balance\'s own growth alone is projected to cover this in full — the client could keep these premiums running from MediSave without drawing down the principal, even without working.'
+      : 'At 4% p.a., growth alone covers about '+fmt(maGrowth)+' of this — the remaining '+fmt(totalCap-maGrowth)+' a year would still draw down the MediSave balance itself over time.';
+    h+='</div>';
+  }else{
+    h+='<div class="ref" style="margin-top:6px">Select a hospital ward preference or long-term care interest in the Coverage tab to see which premiums this MediSave growth could fund.</div>';
+  }
+  h+='<div class="ref" style="margin-top:8px">Additional Withdrawal Limits — S$300/yr up to age 40, S$600/yr for 41–70, S$900/yr from 71 — apply to the additional private insurance component of an Integrated Shield Plan, on top of the Basic Withdrawal Limit that already covers MediShield Life (source: MOH). GREAT TotalCare 2 is a rider and stays cash-only, not MediSave-payable. The S$600/year cap for a CareShield Life/ElderShield supplement is per CPF Board, per person per year. Both are withdrawal ceilings, not guaranteed savings — confirm the actual premium split and MediSave rules in force at the time of payment.</div>';
+  h+='</div>';
+  return h;
+}
 function calcCPF(){
   const age=+$('age').value,oa0=rawNum($('cpfOA')),sa0=rawNum($('cpfSA')),salary=Math.min(8000,rawNum($('cpfSalary')));
   if(!age){$('cpfRes').innerHTML='<p class="empty" style="margin:0">Enter the client\'s age in the Client tab first.</p>';return;}
   if(age>=55){
     $('cpfRes').className='';
-    $('cpfRes').innerHTML='<div class="cover"><b>Client is 55 or older</b><div class="ref" style="margin-top:4px">Their Full Retirement Sum was fixed in the year they turned 55 and their Retirement Account is already formed. The 2026 reference FRS is '+fmt(FRS_2026)+' for those turning 55 this year — check the client\'s actual RA balance and cohort FRS with CPF directly.</div></div>';
+    $('cpfRes').innerHTML='<div class="cover"><b>Client is 55 or older</b><div class="ref" style="margin-top:4px">Their Full Retirement Sum was fixed in the year they turned 55 and their Retirement Account is already formed. The 2026 reference FRS is '+fmt(FRS_2026)+' for those turning 55 this year — check the client\'s actual RA balance and cohort FRS with CPF directly.</div></div>'+medisaveFundingHtml(age);
     return;
   }
   const financingHouse=$('cpfHouse').value==='y',instalment=financingHouse?rawNum($('cpfInst')):0;
@@ -581,6 +604,7 @@ function calcCPF(){
   h+='From age 65: about <b>'+fmt(payout65)+' a month</b><br>';
   h+='If deferred to age 70: about <b>'+fmt(payout70)+' a month</b> (deferring boosts payouts by roughly 6–7% for each year deferred)</div>';
   h+='<details><summary style="font-size:.85rem;color:var(--muted)">More detail</summary><div class="ref" style="margin-top:6px">Uses CPF Board\'s January 2026 contribution and allocation rates, OA at 2.5% p.a. and SA/RA at 4% p.a. Extra interest tiers on the first S$60,000 (or S$30,000+S$30,000 for 55 and above) are not included, so this is a conservative estimate. Assumes a level monthly salary and contributions every year without a break.'+(financingHouse?' Housing instalments are assumed paid from OA every month, reducing OA growth.':' Assumes no withdrawals (e.g. for housing) before 55.')+' The FRS and CPF LIFE payout figures are illustrative, scaled from CPF Board\'s 2026 reference figures (FRS '+fmt(FRS_2026)+' pays about S$1,780 a month from 65) — not an official projection. Use CPF\'s Retirement Payout Planner for an authoritative figure.</div></details>';
+  h+=medisaveFundingHtml(age);
   $('cpfRes').className='';
   $('cpfRes').innerHTML=h;
 }
