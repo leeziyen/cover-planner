@@ -1,7 +1,7 @@
 {
   "name": "Client Cover Planner",
   "short_name": "Cover Planner",
-  "description": "Great Eastern client cover planner — recommendations, wealth and CPF tools.",
+  "description": "Great Eastern client cover planner — recommendations, wealth, CPF and product guide.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

@@ -1,4 +1,4 @@
-const CACHE='cover-planner-v3';
+const CACHE='cover-planner-v4';
 const CORE=['./','./manifest.json','./icon-192.png','./icon-512.png','./icon-180.png','./icon-32.png'];
 self.addEventListener('install',e=>{
   self.skipWaiting();

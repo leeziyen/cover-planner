@@ -107,6 +107,49 @@ summary:hover{color:var(--ink)}
   details{display:block!important}
   summary{display:none!important}
 }
+
+/* --- Products tab: Great Eastern product guide --- */
+.pg-intro{margin:0 0 10px;color:var(--muted);font-size:.9rem;line-height:1.5}
+.pg-search{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;margin-bottom:10px}
+.pg-search:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.pg-legend{display:flex;flex-wrap:wrap;gap:6px 10px;font-size:.78rem;color:var(--muted);align-items:center;margin-bottom:12px}
+.pg-cats{display:flex;flex-direction:column;gap:8px}
+details.pg-cat{margin:0;background:var(--card-soft);border:1px solid var(--line);border-radius:10px;font-size:.92rem}
+details.pg-cat>summary,details.pg-prod>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;color:var(--ink);font-size:inherit}
+details.pg-cat>summary{padding:11px 12px}
+details.pg-cat>summary::-webkit-details-marker,details.pg-prod>summary::-webkit-details-marker{display:none}
+.pg-cat-name{flex:1;min-width:0;font:700 .98rem/1.25 "Literata",Georgia,serif}
+.pg-cat-sub{display:block;font:400 .8rem/1.35 "Public Sans",sans-serif;color:var(--muted);margin-top:2px}
+.pg-count{font-size:.75rem;font-weight:700;color:var(--crimson);background:var(--card);border:1px solid var(--line);padding:2px 8px;border-radius:999px}
+.pg-chev{width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s;flex:none;margin-right:2px}
+details[open]>summary .pg-chev{transform:rotate(-135deg)}
+.pg-prods{border-top:1px solid var(--line);padding:4px 6px 8px}
+details.pg-prod{margin:0}
+details.pg-prod>summary{padding:9px 6px;border-radius:7px;font-weight:600}
+details.pg-prod>summary:hover{background:var(--card)}
+details.pg-prod+details.pg-prod{border-top:1px dashed var(--line)}
+.pg-p-name{flex:1;min-width:0}
+.pg-p-type{display:block;font-weight:400;font-size:.8rem;color:var(--muted)}
+.pg-tag{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:6px;white-space:nowrap}
+.pg-tag.current{color:var(--crimson);background:rgba(140,31,47,.10)}
+.pg-tag.older{color:var(--gold);background:rgba(169,133,46,.14)}
+.pg-tag.withdrawn{color:var(--muted);background:var(--line)}
+.pg-info{padding:2px 6px 12px;display:flex;flex-direction:column;gap:8px;font-size:.88rem;line-height:1.5}
+.pg-info p{margin:0}
+.pg-info ul{margin:0;padding-left:1.1em}
+.pg-info ul li{margin-bottom:3px}
+.pg-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px}
+.pg-fact{border:1px solid var(--line);border-radius:7px;padding:6px 8px;min-width:0;background:var(--card)}
+.pg-fact b{display:block;font-size:.64rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.pg-src{font-size:.74rem;color:var(--muted);word-break:break-word}
+.pg-note{font-size:.84rem;border-left:3px solid var(--gold);background:var(--card);padding:6px 9px;border-radius:6px}
+.pg-foot{font-size:.8rem;color:var(--muted);margin:12px 0 0;line-height:1.5}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr)}
+.tab-btn{min-width:0}
+.quick-mode .tabs{grid-template-columns:repeat(4,1fr)}
+body.pg-on form{position:static}
+body.pg-on form>button[type=submit]{display:none}
+@media (prefers-reduced-motion:reduce){.pg-chev{transition:none}}
 </style>
 </head>
 <body>
@@ -129,6 +172,7 @@ summary:hover{color:var(--ink)}
 <button type="button" class="tab-btn" data-tab="coverage">Coverage</button>
 <button type="button" class="tab-btn" data-tab="wealth">Wealth</button>
 <button type="button" class="tab-btn" data-tab="cpf">CPF</button>
+<button type="button" class="tab-btn" data-tab="products">Products</button>
 </div>
 <div class="tab-panel" data-panel="intro">
 <p class="sub" style="margin:0 0 10px">Two frameworks worth sharing with your client before diving into their numbers.</p>
@@ -191,6 +235,14 @@ summary:hover{color:var(--ink)}
 <div id="cpfInstWrap" hidden><label for="cpfInst">Monthly housing instalment (paid from OA)</label><input id="cpfInst" type="text" inputmode="numeric" placeholder="e.g. 1,500"></div>
 <button type="button" id="cpfCalc">Calculate CPF</button>
 <div id="cpfRes" class="empty" style="margin-top:14px">Fill in the CPF fields above and age in the Client tab, then select Calculate CPF.</div>
+</div>
+<div class="tab-panel" data-panel="products" hidden>
+<p class="pg-intro">Every product in your Drive under Great Eastern › Products, grouped by need. Tap a category, then a product, for its summary.</p>
+<input id="pgQ" class="pg-search" type="search" placeholder="Search, e.g. CareShield, USD, MediSave" aria-label="Search products" autocomplete="off">
+<div class="pg-legend"><span class="pg-tag current">Current</span>latest doc <span class="pg-tag older">Older doc</span>may be superseded <span class="pg-tag withdrawn">Withdrawn</span>no longer sold</div>
+<div class="pg-cats" id="pgCats"></div>
+<p class="empty" id="pgEmpty" hidden>No products match that search.</p>
+<p class="pg-foot">Summaries come from the brochures and product information packs in your folder, with gaps filled from Great Eastern's public product pages. Figures may have changed; check the latest PIP on LifeHub before quoting a client.</p>
 </div>
 <button type="submit">Get recommendation</button>
 </form>
@@ -522,6 +574,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',
   btn.classList.add('active');
   btn.classList.add('visited');
   document.querySelectorAll('.tab-panel').forEach(p=>p.hidden=p.dataset.panel!==btn.dataset.tab);
+  document.body.classList.toggle('pg-on',btn.dataset.tab==='products');
 }));
 document.querySelector('.tab-btn.active').classList.add('visited');
 $('quickMode').addEventListener('change',()=>{
@@ -764,6 +817,254 @@ if('serviceWorker' in navigator){
     location.reload();
   });
 }
+
+// --- Products tab: Great Eastern product guide ---
+const PG_DATA=[
+{cat:"Life Protection",sub:"Whole life, term and legacy cover",items:[
+ {n:"GREAT Life Advantage 4",t:"Whole-of-life regular premium investment-linked plan",s:"current",
+  p:"Lifetime cover against death, total and permanent disability (TPD) and terminal illness, with optional critical illness riders at early, intermediate and critical stages.",
+  f:{"Cover from":"S$100 / month","Premium":"Regular, ILP","CI riders":"e.g. GREAT CI Advantage Plus"},
+  k:["Premium waiver and payer riders available (incl. CriticalCare versions)","Cash-paying riders can also be attached","Child Cover Benefit included","Policy value depends on fund performance and charges"],
+  src:"GLA › GLA 4 and riders › PIP - GREAT Life Advantage 4 and CI UDRs.pdf"},
+ {n:"GREAT Life Advantage III",t:"Earlier version of GREAT Life Advantage",s:"older",
+  p:"Previous generation of the whole-of-life ILP. Kept in your folder with its riders, including the Protect Me Again (PMA) rider training deck.",
+  f:{"Commission table":"Full pay, 20-pay, 10-pay"},
+  k:["For servicing existing clients; new sales go to GLA 4"],
+  src:"GLA › GLA 3 and riders › PIP - GREAT Life Advantage III and riders.pdf"},
+ {n:"GREAT Life Multiplier",t:"Limited-pay whole life participating plan",s:"current",
+  p:"Built for the sandwich generation. Protects against death, TPD and terminal illness, with a multiplier that boosts cover up to 10x during the years it matters most.",
+  f:{"Multiplier":"Up to 10x","Premium rates":"Guaranteed (base plan)","Launched":"25 Jul 2025"},
+  k:["Riders: Critical Illness Multiplier Rider and CI Multiplier Rider (E&I)","Parent Care Rider covers parents for late-stage CIs like dementia and Parkinson's, no underwriting","Parents can buy for a child and transfer ownership at 18","Rider premiums are not guaranteed"],
+  src:"Whole Life Plan › GREAT Life Multiplier PIP.pdf"},
+ {n:"GREAT Flexi Protect Series 3",t:"Whole life plan",s:"older",
+  p:"The PIP saved in your folder is empty (85 bytes), so there was nothing to summarise.",
+  f:{},k:[],note:"Re-download the PIP from LifeHub to fill this in.",
+  src:"Whole Life Plan › Product Information Pack - GREAT Flexi Protect Series 3.pdf"},
+ {n:"GREAT Term Series",t:"Non-participating level term plan",s:"current",
+  p:"Affordable cover against death and terminal illness, with premiums that stay level for the whole term.",
+  f:{"Terms":"Up to age 65, 70, 75, 80 or 85","Cash value":"None"},
+  k:["Riders for TPD, early/intermediate/critical CI, accident and premium waiver","Conversion privilege to a cash-value plan before age 70 next birthday, no medical evidence"],
+  src:"Term Plans › Product Information Pack (PIP) GREAT Term Series.pdf"},
+ {n:"Prestige Legacy Index",t:"USD indexed universal life (Prestige)",s:"current",
+  p:"For affluent clients' legacy planning. Creates an immediate estate of up to 13x premiums paid, with lifelong cover against death and terminal illness.",
+  f:{"Currency":"USD","Premium":"Single, or 5 / 10 years","Index Account floor":"0%"},
+  k:["Index Account plus Fixed Account, with preset apportionment options","Automatic premium spread into the Index Account over 12 months","Non-lapse guarantee (first 5 years for single premium, conditions apply)","Change of life assured from the 3rd policy year; single premium only without premium financing","Premium charge 8% (single / years 1–5)"],
+  src:"PRESTIGE › PLI or IUL › PIPS Prestige Legacy Index"},
+ {n:"Prestige Legacy Advantage",t:"Single premium whole-of-life ILP (Prestige)",s:"current",
+  p:"Investment-linked legacy plan with protection against death and terminal illness. Premiums buy units in professionally managed ILP funds.",
+  f:{"Premium charge":"5% single, 3% top-up","Top-up min.":"S$1,000"},
+  k:["Policy value moves with fund performance","Comparison deck vs Legacy Income sits in the PRESTIGE folder"],
+  src:"PRESTIGE › PLA › Product Information Pack_Prestige Legacy Advantage v1.0.pdf"},
+ {n:"Dependants' Protection Scheme (DPS)",t:"National term life scheme via CPF",s:"current",
+  p:"Basic term cover for CPF members that pays out on death, terminal illness or total permanent disability.",
+  f:{"Sum assured":"S$70,000 to 60; S$55,000 from 60 to 65","Eligibility":"Citizens & PRs aged 21–65"},
+  k:["Automatic cover on first valid working CPF contribution","Ages 16–20 can apply","Premiums deducted from CPF; renewal notice sent 1 month before","Optional; members can opt out"],
+  src:"DPS › dps.pdf"}
+]},
+{cat:"Critical Illness",sub:"Lump sums on diagnosis, including recurrence",items:[
+ {n:"GREAT Critical Cover: Top 3 CIs",t:"Standalone multi-stage CI plan",s:"current",
+  p:"Pays 100% at any stage (early, intermediate or critical) of cancer, heart attack or stroke.",
+  f:{"Conditions":"9 with PMA rider","Premiums":"Increase with age","Discount":"10% perpetual"},
+  k:["S$25,000 compassionate benefit on death from any cause","Add Protect Me Again for up to 2 more payouts","Plan ends after a claim if PMA isn't attached"],
+  src:"Gcc › great-critical-cover-series-web-brochure.pdf"},
+ {n:"GREAT Critical Cover: Complete",t:"Standalone multi-stage CI plan",s:"current",
+  p:"Pays 100% at any stage across 53 critical illnesses, including the top 3. A strong first CI plan.",
+  f:{"Illnesses":"53 (121 conditions with PMA)","Premiums":"Do not increase with age","Discount":"10% perpetual"},
+  k:["Extra benefit for angioplasty","S$25,000 compassionate death benefit","Premiums not guaranteed and may be revised"],
+  src:"Term Plans › Product Information Pack_GREAT Critical Cover Complete.pdf"},
+ {n:"Protect Me Again (PMA) rider",t:"Recurrence rider for GREAT Critical Cover",s:"current",
+  p:"Keeps a client covered after a CI claim, paying up to 2 further lump sums for a new CI or a recurrence of cancer, heart attack, stroke, heart valve surgery, bypass or major transplant.",
+  f:{"Attaches to":"GCC Top 3 / Complete only"},
+  k:["24-month waiting period for a recurring CI claim"],
+  src:"Term Plans › Product Information Pack_GREAT Critical Cover PMA COMPLETE Rider.pdf"},
+ {n:"GREAT Critical Care",t:"Standalone CI plan",s:"older",
+  p:"The two files saved here have no readable text, so there was nothing to summarise.",
+  f:{},k:[],note:"Open the PDFs directly to check what they cover.",
+  src:"Stand-alone CI › Great Critical Care; Great Critical Care Top3 CI PiPs"}
+]},
+{cat:"Hospital & Medical",sub:"Shield plans and hospital cash",items:[
+ {n:"GREAT SupremeHealth + GREAT TotalCare 2",t:"Integrated Shield plan and rider",s:"current",
+  p:"Hospitalisation and surgery cover on top of MediShield Life. Inpatient, day surgery and pre/post-hospitalisation are paid as charged within the ward entitlement.",
+  f:{"Plan types":"P PLUS, P PRIME, A PLUS, B PLUS","Schedule":"Covers starting 1 Apr 2026"},
+  k:["P PLUS / P PRIME: private and restructured hospitals","A PLUS: restructured, Class A; B PLUS: Class B1","Pre-hospital 90 days (180 with panel); post-hospital 180 days (365 with panel)","Outpatient cancer drugs up to 5x MediShield Life's monthly limit"],
+  src:"Hospital Plan › 1 april 2026 › gels-pdt-pd-gsh-gtc-tob-eng.pdf"},
+ {n:"GREAT Hospital Cash",t:"Daily hospital cash plan",s:"current",
+  p:"Cash payouts during hospitalisation to cover living and out-of-pocket costs, complementing a Shield plan.",
+  f:{"Daily cash":"Up to S$600","ICU extra":"Up to S$1,200 / day","Get Well":"Up to S$1,800"},
+  k:["Pays from 12 hours of hospitalisation","Lump sum after 3+ days, and again after surgery","A&E outpatient for injury reimbursed up to S$600","5% renewal discount from year 2; extra 20% off with GREAT SupremeHealth","Online sign-up with 3 questions"],
+  src:"GHC › great-hospital-cash.pdf"},
+ {n:"Premier Health Plan",t:"Health plan (Great Eastern Brunei)",s:"older",
+  p:"A Brunei brochure, not a Singapore product. Kept for reference only.",
+  f:{"Market":"Brunei"},k:[],
+  src:"Hospital Plan › Premier Health Plan"}
+]},
+{cat:"Maternity",sub:"Mother and newborn cover",items:[
+ {n:"Maternity Protect",t:"3-year single premium maternity term plan",s:"current",
+  p:"Covers the mother and up to two babies (twins) across pregnancy, childbirth and early childhood.",
+  f:{"Premium":"Single","Term":"3 years","Pairs with":"GREAT Life Multiplier"},
+  k:["Covers natural and selected assisted conceptions","Pregnancy and childbirth complications, payable once","Mum Again option: next maternity plan without underwriting","Guaranteed option to insure the baby without underwriting","Babies can get a Shield plan with 2 questions (campaign)"],
+  src:"GMC › Maternity Protect_Product Information Pack (PIP).pdf"},
+ {n:"GREAT Maternity Care 2",t:"Single premium maternity plan",s:"older",
+  p:"Covers mother and child from as early as 13 weeks of pregnancy until the end of the 3rd policy year.",
+  f:{"Starts":"13 weeks","Hospital cash":"Up to S$200/day, 30 days"},
+  k:["Mother: death/TPD, 19 pregnancy complications, psych consultations","Child: 26 congenital illnesses, 15 juvenile conditions, major organ benefit","Guaranteed insurability within 90 days of birth","Mum Again Benefit for the next pregnancy"],
+  src:"Pregnant › Product Info Pack_GREAT Maternity Care 2.pdf"}
+]},
+{cat:"Disability & Long-term Care",sub:"Monthly income when unable to work or care for oneself",items:[
+ {n:"GREAT CareShield",t:"CareShield Life supplement",s:"current",
+  p:"The only CareShield Life supplement that pays monthly, up to a lifetime, when the client can't do just 1 of the 6 Activities of Daily Living.",
+  f:{"Initial benefit":"Up to S$15,000","Pay with":"MediSave up to S$600/yr"},
+  k:["Premiums waived during disability","2+ ADLs: extra 60% for caregiver and 30% for dependants","Premiums don't rise with age; start young","Free home-based disability assessment"],
+  src:"GCS › great-careshield-english-brochure.pdf"},
+ {n:"PayAssure Plan & Rider",t:"Disability income policy",s:"older",
+  p:"Monthly income when the client cannot do their own job due to illness or injury, filling the gap that lump-sum life cover leaves.",
+  f:{"Launched":"1 Jul 2013","Currency":"SGD"},
+  k:["Covers total and partial disability, rehabilitation costs and death","Non-working disability defined by 2 of 6 ADLs"],
+  src:"Careshield and Disability › Disability Income - PayAssure PIP.pdf"}
+]},
+{cat:"Personal Accident",sub:"Accident cover for adults, seniors and kids",items:[
+ {n:"GREAT Protector Active",t:"Personal accident plan",s:"current",
+  p:"Accident protection for active lifestyles, with medical expense reimbursement that also covers some sickness.",
+  f:{"Plans":"Basic, Classic, Elite","Medical":"S$3,000–5,000 per accident"},
+  k:["Benefit Booster raises medical limits to S$4,500–7,500","TCM / allied health sub-limit S$1,000","Covers insect/animal bites, food poisoning, HFMD up to S$500"],
+  src:"Accident › GPA 2024.pdf, GPA PIP.pdf, PIP for Great Protector.pdf"},
+ {n:"GREAT Golden Protector",t:"Personal accident plan for seniors",s:"current",
+  p:"Accident cover designed for the golden years, with extra support for recovery and mobility.",
+  f:{"Accidental death":"S$30k / 60k / 90k","Daily hospital cash":"S$100–200"},
+  k:["Triple payout on public transport, PMD or private car","Loss of ADL benefit S$20k–45k","Mobility aids and post-hospital aftercare","25% off for the 2nd life assured"],
+  src:"Accident › GGP 2024.pdf, Product Information Pack - GGP.pdf"},
+ {n:"GREAT Junior Protector",t:"Personal accident plan for children",s:"current",
+  p:"Accident cover for kids wherever they are, plus an education fund if the worst happens.",
+  f:{"Accidental death":"S$25k / 50k / 100k","Medical":"S$3k–9k per accident"},
+  k:["Covers dengue, HFMD, food poisoning","Reconstructive surgery up to S$5,000","Education Assurance Fund equal to sum assured","Triple indemnity on public transport or car"],
+  src:"Accident › GJP 2024.pdf, Product Information Pack -GJP.pdf"},
+ {n:"Essential Protector Plus",t:"Personal accident plan and rider",s:"current",
+  p:"Affordable 24/7 worldwide accident cover with guaranteed acceptance for ages 17–65.",
+  f:{"Sum assured":"S$50k / 100k / 200k","Annual premium":"From S$227.91"},
+  k:["Overseas medical limit doubled","Extra 20% cover for women","Hospital income incl. dengue haemorrhagic fever and food poisoning","Also available as a rider"],
+  src:"Accident › ESPP, ESPP PIP.pdf"},
+ {n:"AccidentCare Plus II",t:"Accident plan and riders",s:"older",
+  p:"Older accident plan and rider family. The pack dates from 2012.",
+  f:{"Pack dated":"23 Feb 2012"},k:[],
+  src:"Accident › AccidentCare Plus II PIP.pdf"}
+]},
+{cat:"Retirement Income",sub:"Guaranteed and bonus payouts",items:[
+ {n:"GREAT Lifetime Payout 3",t:"Participating whole life income plan",s:"current",
+  p:"Pay 3 years of premiums and get monthly payouts for life, starting after 3.5 years.",
+  f:{"Payout":"Up to 3.15% p.a.","Premium term":"3 years"},
+  k:["3.15% guaranteed only for months 43–48; later payouts mix 0.85% guaranteed and non-guaranteed (premiums ≥ S$30k, IIRR 4.25%)","Capital guaranteed at end of year 3 (annual mode)","Optional GREAT Lifetime Payout Rider pays years 2–3 premiums with a maturity benefit","Payouts can accumulate at 3.00% (non-guaranteed)"],
+  src:"GLP › gels-pdt-pd-glp3-brochure-ri.pdf"},
+ {n:"GREAT Prime Rewards 3",t:"Single premium endowment",s:"current",
+  p:"Retirement income stream with annual payouts of up to 1.47x the single premium.",
+  f:{"Min. premium":"S$10,000","Funding":"Cash or SRS","Payout years":"10, 15, 17 or 20"},
+  k:["100% capital guaranteed from end of year 5","Reinvest payouts for up to 1.82x total returns","Covers death, TPD and terminal illness"],
+  src:"Great PR › gels-pd-pdt-great-prime-rewards3-brochure.pdf"},
+ {n:"Legacy Income (USD)",t:"Single premium participating endowment",s:"current",
+  p:"Pay once and receive monthly payouts from the 13th month for up to 100 years, with unlimited transfers across generations.",
+  f:{"Min. premium":"US$100,000","Payout":"4.10–4.20% p.a. (1.60% guaranteed)","Launched":"8 Jan 2026"},
+  k:["Universal Wealth Transfer Option: change owner while alive, or name a Policy Successor","Guaranteed issuance, no medical underwriting, up to age 75","Death 101%, accidental death 105% (year 1) of premium plus bonuses","Not for SGD-only clients or short horizons; FX risk"],
+  src:"PRESTIGE › USD › Legacy income usd › Product Information Pack Legacy Income (USD).pdf"}
+]},
+{cat:"Wealth & Investment",sub:"ILPs and index-linked plans",items:[
+ {n:"GREAT Wealth Advantage 4",t:"Regular premium whole-of-life ILP",s:"current",
+  p:"Regular investing with 100% of premium invested from day one, plus a Welcome Bonus of up to 55%.",
+  f:{"From":"S$100 / month","Plans":"Choice 5, 10 or 15","Funds":"3 Dynamic Portfolios + 30+ funds"},
+  k:["Loyalty and Premium Bonus as extra units","GreatLink Dynamic Portfolios (Secure, Balanced, Growth) use J.P. Morgan asset allocation","Covers death, TPD and terminal illness","Ownership or life assured can pass to family","Campaign Welcome Bonus up to 10% extra ran to 30 Jun 2026"],
+  src:"GWA › great-wealth-advantage-english-brochure.pdf"},
+ {n:"GREAT Flexi Advantage",t:"Single / recurrent premium ILP",s:"current",
+  p:"Taps dividend-paying GreatLink funds for income, with the choice to receive or reinvest dividends.",
+  f:{"Funding":"Cash or SRS","Funds":"40, incl. 7 dividend-paying","Lock-in":"None"},
+  k:["No penalty for partial withdrawal or surrender","Top up any time","Accidental death pays the higher of 105% premiums or account value"],
+  src:"GFA › great-flexi-advantage-brochure.pdf"},
+ {n:"GREAT Index Income",t:"9-year single premium endowment (SGD)",s:"current",
+  p:"Yearly payouts linked to the UBS Multi Asset Engle SGD Index, with capital guaranteed at maturity.",
+  f:{"Min. premium":"S$50,000","Term":"9 years","Floor":"0% p.a."},
+  k:["Payout = index return x participation rate (min. 25%) x premium","Withdraw or accumulate payouts","Death 101%, accidental death 105%, no medical","Capital guarantee lost on partial surrender"],
+  src:"GII › GREAT Index Income - Product Info Pack.pdf"},
+ {n:"Prestige Index Income",t:"USD single premium endowment (Prestige)",s:"current",
+  p:"Index-linked yearly income from the S&P 500 Engle 6% VT TCA Index, with 100% capital guaranteed at maturity.",
+  f:{"Currency":"USD","Floor":"0% p.a."},
+  k:["Withdraw or accumulate the Yearly Income Benefit","Death 101%, accidental death 105%, no medical"],
+  src:"PRESTIGE › Prestige Index Income › Product Info Pack-Prestige Index Income.pdf"},
+ {n:"GREAT Invest Advantage",t:"Investment-linked plan",s:"older",
+  p:"Only the table of contents was readable, so details aren't summarised here.",
+  f:{},k:[],note:"Open the PIP for features and charges.",
+  src:"Products › PIP - GREAT Invest Advantage.pdf"}
+]},
+{cat:"Travel & Micro Covers",sub:"Trips and dengue",items:[
+ {n:"TravelSmart Premier",t:"Travel insurance",s:"older",
+  p:"Worldwide travel cover including COVID-19, medical, evacuation and trip disruption.",
+  f:{"Plans":"Elite, Classic, Basic","Evacuation":"Up to S$1 million","Cancellation":"Up to S$15,000"},
+  k:["Adventure sports covered on Classic and Elite","Accidental death up to S$500,000 (Elite, under 70)"],
+  src:"Travel insurance › travelsmart-premier-brochure.pdf"},
+ {n:"GREAT Dengue Cover",t:"12-month group micro-insurance",s:"current",
+  p:"Short-term dengue cover issued under a Great Eastern group policy.",
+  f:{"Period":"12 months"},k:[],
+  src:"DPS › gels-pdt-pd-gdc-coi 2.pdf"},
+ {n:"Get Well Benefit",t:"12-month dengue lump sum",s:"current",
+  p:"Pays S$150 once if diagnosed with dengue fever in Singapore during the 12 months.",
+  f:{"Payout":"S$150, once"},k:["No payout during the waiting period"],
+  src:"DPS › gels-pdt-pd-gwb-coi 2.pdf"}
+]},
+{cat:"Group: MINDEF & MHA",sub:"Voluntary scheme for servicemen and families",items:[
+ {n:"Group Term Life",t:"Group term cover",s:"older",
+  p:"Death and TPD cover up to age 70 that continues after leaving service or NS.",
+  f:{"Max cover":"S$1,000,000","Cost":"S$0.831 / day"},
+  k:["No medicals up to S$300,000","Same premium to age 65","Terminal illness advance up to S$400,000"],
+  note:"These summaries point to singlife.com, so check who currently underwrites the scheme.",
+  src:"Group insurances › group-term-life-product-summary.pdf"},
+ {n:"Group Personal Injury",t:"Group accident cover",s:"older",
+  p:"Accident cover up to age 70, paying 150% for accidental TPD.",
+  f:{"Max cover":"S$1,000,000","Cost":"S$0.171 / day"},
+  k:["Fracture cover and ambulance reimbursement","24/7 worldwide"],
+  src:"Group insurances › group-personal-injury-product-summary.pdf"},
+ {n:"Living Care",t:"Group CI rider",s:"older",
+  p:"Lump sum on 37 severe critical illnesses for members insured under GTL or GPI.",
+  f:{"Cover":"Up to S$500,000","Entry age":"65 and below"},
+  k:["Doesn't reduce GTL / GPI cover"],
+  src:"Group insurances › living-care-product-summary.pdf"},
+ {n:"Living Care Plus",t:"Group early CI rider",s:"older",
+  p:"Lump sum on 10 early critical illnesses, including early cancer.",
+  f:{"Cover":"S$10,000 to S$500,000"},k:[],
+  src:"Group insurances › living-care-plus-product-summary.pdf"}
+]},
+{cat:"Withdrawn Plans",sub:"For servicing existing policies",items:[
+ {n:"GREAT Family Care",t:"CI term plan covering three generations",s:"withdrawn",
+  p:"Covered the life assured, their children (free, up to 18) and parents (via Parent Protect rider) in one policy.",f:{},k:[],
+  src:"Withdrawn Plans › GREAT Family Care PIP, brochure"},
+ {n:"GreatLink Supreme Life",t:"Investment-linked life plan",s:"withdrawn",p:"Sample product summary only.",f:{},k:[],
+  src:"Withdrawn Plans › GreatLink Supreme Life sample product summary.pdf"},
+ {n:"Additional Living Benefit (30 / 37 CI)",t:"CI rider",s:"withdrawn",p:"Product summaries for the 30-CI and 37-CI versions.",f:{},k:[],
+  src:"Withdrawn Plans › Additional Living Benefit (Product Summary)"},
+ {n:"Junior Protector",t:"Children's plan",s:"withdrawn",p:"Policy contract only.",f:{},k:[],
+  src:"Withdrawn Plans › Junior Protector Policy Contract.pdf"}
+]}
+];
+const PG_LABEL={current:"Current",older:"Older doc",withdrawn:"Withdrawn"};
+const pgEsc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function pgProd(p){
+  const facts=Object.entries(p.f).map(([a,b])=>'<div class="pg-fact"><b>'+pgEsc(a)+'</b><span>'+pgEsc(b)+'</span></div>').join('');
+  return '<details class="pg-prod"><summary><span class="pg-p-name">'+pgEsc(p.n)+'<span class="pg-p-type">'+pgEsc(p.t)+'</span></span><span class="pg-tag '+p.s+'">'+PG_LABEL[p.s]+'</span><span class="pg-chev" aria-hidden="true"></span></summary>'
+    +'<div class="pg-info"><p>'+pgEsc(p.p)+'</p>'+(facts?'<div class="pg-facts">'+facts+'</div>':'')
+    +(p.k.length?'<ul>'+p.k.map(x=>'<li>'+pgEsc(x)+'</li>').join('')+'</ul>':'')
+    +(p.note?'<div class="pg-note">'+pgEsc(p.note)+'</div>':'')
+    +'<div class="pg-src">Source: '+pgEsc(p.src)+'</div></div></details>';
+}
+function pgRender(q){
+  q=(q||'').trim().toLowerCase();
+  let html='',any=false;
+  PG_DATA.forEach(c=>{
+    const items=q?c.items.filter(p=>JSON.stringify(p).toLowerCase().includes(q)):c.items;
+    if(!items.length)return; any=true;
+    html+='<details class="pg-cat"'+(q?' open':'')+'><summary><span class="pg-cat-name">'+pgEsc(c.cat)+'<span class="pg-cat-sub">'+pgEsc(c.sub)+'</span></span><span class="pg-count">'+items.length+'</span><span class="pg-chev" aria-hidden="true"></span></summary><div class="pg-prods">'+items.map(pgProd).join('')+'</div></details>';
+  });
+  document.getElementById('pgCats').innerHTML=html;
+  document.getElementById('pgEmpty').hidden=any;
+}
+pgRender('');
+document.getElementById('pgQ').addEventListener('input',e=>pgRender(e.target.value));
+// Enter in the search box must not submit the planner form
+document.getElementById('pgQ').addEventListener('keydown',e=>{if(e.key==='Enter')e.preventDefault();});
 </script>
 </body>
 </html>
